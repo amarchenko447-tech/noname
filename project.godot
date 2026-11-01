@@ -22,6 +22,7 @@ environment/defaults/default_clear_color=Color(0.847, 0.941, 0.898, 1)
 
 [autoload]
 SettingsManager="*res://scripts/autoload/settings_manager.gd"
+WorldService="*res://scripts/autoload/world_service.gd"
 
 [internationalization]
 locale/fallback="en"

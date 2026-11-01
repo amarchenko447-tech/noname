@@ -24,21 +24,23 @@ func capture() -> void:
 		quit(1)
 		return
 	var args := OS.get_cmdline_user_args()
-	output_path = args[0] if args.size() else ProjectSettings.globalize_path("res://docs/screenshots/phase_0_5")
+	output_path = args[0] if args.size() else ProjectSettings.globalize_path("res://docs/screenshots/phase_0_75/after")
 	DirAccess.make_dir_recursive_absolute(output_path)
 	var settings := root.get_node("SettingsManager")
 	settings.load_preferences("user://capture_preferences.cfg", "en_US")
 	change_scene_to_file("res://scenes/boot/boot.tscn")
 	await settle()
-	var garden := current_scene
-	garden.world.animate = false
-	garden.world.ambience.animate = false
-	garden.world.animation_time = 2.25
-	garden.world.ambience.animation_time = 2.25
-	garden.world.selection_elapsed = 1.0
+	var farm := current_scene
+	var garden: Control = farm.hud
+	var world: Node2D = farm.world
+	world.animate = false
+	world.ambience.animate = false
+	world.animation_time = 2.25
+	world.ambience.animation_time = 2.25
+	world.selection_elapsed = 1.0
 	settings.set_reduced_motion(false)
-	garden.world.queue_redraw()
-	garden.world.ambience.queue_redraw()
+	world.queue_redraw()
+	world.ambience.queue_redraw()
 	for dimensions in [Vector2i(390, 844), Vector2i(430, 932)]:
 		root.size = dimensions
 		for code in settings.SUPPORTED:

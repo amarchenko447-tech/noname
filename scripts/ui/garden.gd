@@ -1,20 +1,23 @@
 extends Control
 
-const World = preload("res://scripts/ui/garden_world.gd")
-const Backdrop = preload("res://scripts/ui/garden_backdrop.gd")
 const Icon = preload("res://scripts/ui/garden_icon.gd")
 const Strings = preload("res://scripts/ui/strings.gd")
-const Plot = preload("res://scripts/models/plot_data.gd")
 const INK = Color("294c3c")
 const MUTED = Color("52634c")
-var plots: Array = []
-var world: Node2D
+signal layout_changed(viewport_size: Vector2, play_area: Rect2, anchor: Vector2, zoom: float)
+signal next_requested
+signal focus_requested
+signal retry_requested
+signal modal_changed(opened: bool)
+var model: RefCounted
+var play_area: Rect2
 var safe: MarginContainer
 var context_title: Label
 var context_body: Label
 var context_card: PanelContainer
 var header: VBoxContainer
-var selected_plot: int = -1
+var selected_plot_id: StringName = &""
+var world_error_key: String = ""
 var level_label: Label
 var collection_label: Label
 var coin_label: Label
@@ -32,25 +35,13 @@ var _refreshing: bool = false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for i in range(9):
-		plots.append(Plot.new(i))
 	_build_theme()
-	var backdrop := Backdrop.new()
-	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
-	world = World.new()
-	world.z_index = 20
-	add_child(world)
-	world.plot_selected.connect(_select_plot)
 	_build_hud()
 	SettingsManager.language_changed.connect(_on_language_changed)
-	SettingsManager.motion_changed.connect(_on_motion_changed)
 	SettingsManager.save_failed.connect(_on_save_failed)
 	resized.connect(_schedule_layout)
-	world.set_motion_reduced(SettingsManager.reduced_motion)
+	refresh_world_status()
 	_refresh_texts()
-	world.select_plot(4)
-	world.selection_elapsed = 1.0
 	_schedule_layout()
 
 func _style(color: Color, radius: int = 20, padding: int = 16, shadow: bool = true) -> StyleBoxFlat:
@@ -260,20 +251,22 @@ func _refresh_texts() -> void:
 	_schedule_layout()
 
 func _refresh_context() -> void:
-	if selected_plot >= 0:
-		context_title.text = tr("PLOT_TITLE") % (selected_plot + 1) + " · " + tr("PLOT_EMPTY")
+	var record: RefCounted = model.get_object(selected_plot_id)
+	if record != null:
+		context_title.text = (tr("PLOT_TITLE") % record.label_number if record.label_number > 0 else tr("UI_GARDEN")) + " · " + tr("PLOT_EMPTY")
 		context_body.text = tr("PLOT_SELECTED_HINT")
 	else:
 		context_title.text = tr(Strings.EMPTY)
 		context_body.text = tr(Strings.HINT)
+	action_button.text = tr("ACTION_NEXT_BED")
+	if not world_error_key.is_empty():
+		context_body.text = tr(world_error_key)
+		action_button.text = tr("UI_RETRY")
 	if not SettingsManager.last_save_ok:
 		context_body.text = tr("SAVE_SETTINGS_ERROR")
 
 func _on_language_changed(_locale: String) -> void:
 	_refresh_texts()
-
-func _on_motion_changed(value: bool) -> void:
-	world.set_motion_reduced(value)
 
 func _on_save_failed() -> void:
 	if is_instance_valid(context_body):
@@ -295,7 +288,7 @@ func safe_margins_for(viewport_size: Vector2, screen_size: Vector2, usable: Rect
 
 func _layout() -> void:
 	_layout_pending = false
-	if not is_instance_valid(world):
+	if not is_instance_valid(safe):
 		return
 	var margins := Vector4(18, 24, 18, 24)
 	if OS.has_feature("mobile") and DisplayServer.get_name() != "headless":
@@ -316,26 +309,37 @@ func _layout() -> void:
 	# Fixed phone reference keeps text at 14–32 logical pixels. World scales
 	# independently, and 160×128 spacing leaves a full 48×48 cell per bed.
 	var factor: float = clampf((size.x - 20.0) / 1080.0, 0.335, 0.345)
-	world.scale = Vector2.ONE * factor
-	world.touch_half_size = 24.0 / factor
 	var top: float = header.get_global_rect().end.y + 14.0
 	var bottom: float = context_card.get_global_rect().position.y - 18.0
-	world.position = Vector2(size.x * 0.5, (top + bottom) * 0.5 + 9)
+	play_area = Rect2(0, top, size.x, maxf(1, bottom - top))
+	layout_changed.emit(size, play_area, Vector2(size.x * 0.5, (top + bottom) * 0.5 + 9), factor)
 
-func _select_plot(index: int) -> void:
-	selected_plot = index
+func set_selected(id: StringName) -> void:
+	selected_plot_id = id
 	_refresh_context()
 	_schedule_layout()
 
 func _next_bed() -> void:
-	world.select_plot((maxi(selected_plot, 0) + 1) % 9)
+	if not world_error_key.is_empty():
+		retry_requested.emit()
+	else:
+		next_requested.emit()
 
 func _focus_garden() -> void:
-	if is_instance_valid(dialog):
-		dialog.queue_free()
-		dialog = null
-	dialog_kind = ""
-	world.select_plot(4)
+	_close_dialog()
+	focus_requested.emit()
+
+func can_start_world(point: Vector2) -> bool:
+	return not is_instance_valid(dialog) and play_area.has_point(point)
+
+func refresh_world_status() -> void:
+	world_error_key = "WORLD_SAVE_BLOCKED" if WorldService.load_status == "blocked" else ("WORLD_SAVE_ERROR" if not WorldService.last_save_ok else ("WORLD_RECOVERED" if WorldService.load_status == "recovered" else ""))
+	if is_instance_valid(context_body):
+		_refresh_context()
+
+func show_world_error(key: String) -> void:
+	world_error_key = key
+	_refresh_context()
 
 func _open_settings() -> void:
 	_open_dialog("settings")
@@ -346,6 +350,7 @@ func _close_dialog() -> void:
 		dialog = null
 	language_buttons.clear()
 	dialog_kind = ""
+	modal_changed.emit(false)
 	settings_button.grab_focus()
 
 func _open_dialog(kind: String) -> void:
@@ -354,6 +359,7 @@ func _open_dialog(kind: String) -> void:
 		dialog.queue_free()
 	language_buttons.clear()
 	dialog_kind = kind
+	modal_changed.emit(true)
 	dialog = Control.new()
 	dialog.z_index = 3000
 	dialog.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

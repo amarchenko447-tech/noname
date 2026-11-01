@@ -72,13 +72,16 @@ func run() -> void:
 		check(font.has_char(character.unicode_at(0)), "font glyph " + character)
 	change_scene_to_file("res://scenes/boot/boot.tscn")
 	await settle()
-	var garden := current_scene
-	check(garden != null and garden.name == "Garden", "actual garden opens")
-	var identity: int = garden.get_instance_id()
-	garden.plots[0].species_id = &"mint"
+	var farm := current_scene
+	var garden: Control = farm.hud
+	var world: Node2D = farm.world
+	var plot_ids: Array[StringName] = garden.model.ids_of_kind("plot")
+	check(garden != null and farm.name == "Garden", "actual garden opens")
+	var identity: int = farm.get_instance_id()
 	var snapshot: Array = []
-	for plot in garden.plots:
-		snapshot.append([plot.id, plot.species_id])
+	for id in plot_ids:
+		var plot: RefCounted = garden.model.get_object(id)
+		snapshot.append([plot.id, plot.cell])
 	# Sentinel save deliberately includes future fields; preference writes must
 	# not rewrite this existing gameplay file or change stable model IDs.
 	var sentinel_path: String = "user://qa_gameplay_fixture.json"
@@ -98,14 +101,15 @@ func run() -> void:
 		var translation: Translation = load("res://localization/ui." + code + ".translation")
 		for key in keys:
 			check(not translation.get_message(key).is_empty(), "imported translation " + code + "/" + key)
-		for i in range(garden.plots.size()):
-			check([garden.plots[i].id, garden.plots[i].species_id] == snapshot[i], "stable game identity " + code)
+		for i in range(plot_ids.size()):
+			var record: RefCounted = garden.model.get_object(plot_ids[i])
+			check([record.id, record.cell] == snapshot[i], "stable game identity " + code)
 		check(garden.coin_label.text == "150", "coin presentation unchanged " + code)
 		check(FileAccess.get_file_as_string(sentinel_path) == sentinel_text, "gameplay save unchanged " + code)
 		for dimensions in [Vector2i(390, 844), Vector2i(430, 932)]:
 			root.size = dimensions
 			await settle()
-			var bounds := Rect2(garden.world.position - Vector2(555, 530) * garden.world.scale, Vector2(1110, 990) * garden.world.scale)
+			var bounds: Rect2 = world.screen_bounds()
 			check(garden.get_global_rect().encloses(bounds), "whole garden visible " + code + str(dimensions))
 			check(bounds.position.y > garden.header.get_global_rect().end.y, "garden clears header " + code)
 			check(bounds.end.y < garden.context_card.get_global_rect().position.y, "garden clears card " + code)
@@ -120,8 +124,8 @@ func run() -> void:
 				# that bed even where its visual diamond tapers away.
 				for x in [-24.0, -12.0, 0.0, 12.0, 24.0]:
 					for y in [-24.0, -12.0, 0.0, 12.0, 24.0]:
-						var p: Vector2 = garden.world.centers[i] + Vector2(x, y) / garden.world.scale.x
-						check(garden.world.plot_at(p) == i, "48px effective target bed %d/%s" % [i, code])
+						var p: Vector2 = world.centers[plot_ids[i]] + Vector2(x, y) / farm.camera_rig.zoom_value()
+						check(world.plot_at(p) == plot_ids[i], "48px effective target bed %d/%s" % [i, code])
 			garden._open_settings()
 			await settle()
 			check(garden.dialog_kind == "settings", "settings opens " + code)
@@ -137,45 +141,47 @@ func run() -> void:
 			garden._close_dialog()
 			await settle()
 	# Stable overlap policy: create deliberate overlap without changing geometry.
-	var old_half: float = garden.world.touch_half_size
-	garden.world.touch_half_size = 200
-	var midpoint: Vector2 = (garden.world.centers[0] + garden.world.centers[1]) * 0.5
-	check(garden.world.plot_at(midpoint) == 0, "equidistant overlap resolves lower stable ID")
-	check(garden.world.plot_at(midpoint + Vector2(0.1, 0.1)) == 1, "overlap selects closest center")
-	garden.world.touch_half_size = old_half
-	garden.world.animate = false
-	garden.world.ambience.animate = false
-	garden.world.select_plot(0)
-	garden.world.selection_elapsed = 0.09
-	garden.world._apply_bounce()
-	check(garden.world.beds[0].position.y < garden.world.centers[0].y, "180ms bounce lifts at midpoint")
-	garden.world.selection_elapsed = 0.18
-	garden.world._apply_bounce()
-	check(garden.world.beds[0].position.is_equal_approx(garden.world.centers[0]), "bounce finishes at 180ms")
+	var old_half: float = world.touch_half_size
+	world.touch_half_size = 200
+	var midpoint: Vector2 = (world.centers[plot_ids[0]] + world.centers[plot_ids[1]]) * 0.5
+	check(world.plot_at(midpoint) == plot_ids[0], "equidistant overlap resolves lower stable ID")
+	check(world.plot_at(midpoint + Vector2(0.1, 0.1)) == plot_ids[1], "overlap selects closest center")
+	world.touch_half_size = old_half
+	world.animate = false
+	world.ambience.animate = false
+	world.select_plot(plot_ids[0])
+	world.selection_elapsed = 0.09
+	world._apply_bounce()
+	check(world.views[plot_ids[0]].get_global_position().y < world.centers[plot_ids[0]].y, "180ms bounce lifts at midpoint")
+	world.selection_elapsed = 0.18
+	world._apply_bounce()
+	check(world.views[plot_ids[0]].get_global_position().is_equal_approx(world.centers[plot_ids[0]]), "bounce finishes at 180ms")
 	settings.set_reduced_motion(true)
-	check(garden.world.reduced_motion and garden.world.ambience.reduced_motion, "reduced motion reaches all effects")
-	garden.world.select_plot(2)
-	garden.world.selection_elapsed = 0.09
-	garden.world._apply_bounce()
-	check(garden.world.beds[2].position == garden.world.centers[2], "reduced motion disables bounce")
+	check(world.reduced_motion and world.ambience.reduced_motion, "reduced motion reaches all effects")
+	world.select_plot(plot_ids[2])
+	world.selection_elapsed = 0.09
+	world._apply_bounce()
+	check(world.views[plot_ids[2]].get_global_position() == world.centers[plot_ids[2]], "reduced motion disables bounce")
 	settings.set_reduced_motion(false)
 	# Decorative animation phases must never alter touch resolution.
 	for phase in [0.0, 2.25, 7.0]:
-		garden.world.ambience.animation_time = phase
+		world.ambience.animation_time = phase
 		for i in range(9):
 			var touch := InputEventScreenTouch.new()
 			touch.index = 0
 			touch.pressed = true
-			touch.position = garden.world.get_global_transform_with_canvas() * garden.world.centers[i]
+			touch.position = world.get_global_transform_with_canvas() * world.centers[plot_ids[i]]
+			root.push_input(touch, true)
+			touch.pressed = false
 			root.push_input(touch, true)
 			await process_frame
-			check(garden.selected_plot == i, "ambient layer never intercepts touch")
+			check(garden.selected_plot_id == plot_ids[i], "ambient layer never intercepts touch")
 	# Buttons activate on a completed press/release, unlike plot press feedback.
 	await click(garden.settings_button.get_global_transform_with_canvas() * (garden.settings_button.size * 0.5))
 	check(garden.dialog_kind == "settings", "gear opens settings with GUI input")
-	var prior_selection: int = garden.selected_plot
-	await click(garden.world.get_global_transform_with_canvas() * garden.world.centers[0])
-	check(garden.selected_plot == prior_selection, "dialog blocks garden input")
+	var prior_selection: StringName = garden.selected_plot_id
+	await click(world.get_global_transform_with_canvas() * world.centers[plot_ids[0]])
+	check(garden.selected_plot_id == prior_selection, "dialog blocks garden input")
 	garden._open_dialog("language")
 	await settle()
 	var language_choice: Button = garden.language_buttons[5]

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WorldDefinition" load_steps=6 format=3]
+[ext_resource type="Script" path="res://scripts/world/world_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/grid_metrics.gd" id="2"]
+[ext_resource type="Resource" path="res://resources/world/plot.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/world/starter_region.tres" id="4"]
+[sub_resource type="Resource" id="Metrics"]
+script=ExtResource("2")
+tile_size=Vector2(320, 256)
+origin=Vector2(0, -256)
+[resource]
+script=ExtResource("1")
+world_id=&"mutant_garden"
+metrics=SubResource("Metrics")
+object_definitions=Array[Resource]([ExtResource("3")])
+regions=Array[Resource]([ExtResource("4")])
+starter_region_id=&"starter_meadow"

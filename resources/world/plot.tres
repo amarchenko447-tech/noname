@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WorldObjectDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/world/object_definition.gd" id="1"]
+[resource]
+script=ExtResource("1")
+definition_id=&"garden_plot"
+kind="plot"
+occupancy_layer=&"solid"
+footprint=Array[Vector2i]([Vector2i(0, 0)])
+visual_key=&"garden_bed"

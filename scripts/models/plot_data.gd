@@ -1,7 +1,8 @@
 class_name PlotData
 extends RefCounted
-## Foundation only. Crop timestamps and atomic operations arrive in Phase 1.
-var id: int
-var species_id: StringName = &""
-func _init(plot_id: int = 0) -> void:
-	id = plot_id
+## Reserved crop attachment state, separate from map placement and definition.
+## No planting/growth mechanics are implemented in Phase 0.75.
+var plot_id: StringName
+var crop_id: StringName = &""
+func _init(stable_plot_id: StringName = &"") -> void:
+	plot_id = stable_plot_id

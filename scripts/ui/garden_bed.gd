@@ -1,12 +1,12 @@
 extends Node2D
 ## Static local soil art: recorded once, moved by the selection tween.
 const Art = preload("res://scripts/ui/garden_drawing.gd")
-var bed_id: int = 0
+var art_seed: int = 0
 var flecks: Array[Vector2] = []
 
 func _ready() -> void:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 200 + bed_id
+	rng.seed = 200 + art_seed
 	for i in range(85):
 		var point := Vector2(rng.randf_range(-119, 119), rng.randf_range(-76, 76))
 		if absf(point.x) / 119.0 + absf(point.y) / 76.0 < 0.9:

@@ -1,10 +1,11 @@
 # Mutant Garden
 Original offline mobile gardening game using **Godot 4.6.3 stable / GDScript**.
-Current milestone: **Phase 0.5 — visual polish, mobile UX and seven-language localization**.
+Current milestone: **Phase 0.75 — expandable world architecture**.
 Phase 1 gameplay has not started.
 
 Open `project.godot` in Godot 4.6.3 and press **F5**.
-Tap any of the nine beds, use Next bed, or open the gear button → Language.
+Tap any bed, drag the map, pinch to zoom (desktop: mouse drag/wheel),
+use Garden to recenter, or open the gear button → Language.
 Guide and Field notes open informative panels; planting, growth, rewards and shop
 transactions belong to the next phases. Level 1, 150 coins and 0/24 discoveries are
 foundation presentation values, not a new progression system.
@@ -51,3 +52,8 @@ For an exact desktop window, set the project's Window Width/Height Override to
 No third-party runtime packages, network calls, analytics or game SDKs are used.
 No Android/iOS export or device benchmark is claimed. Source/art license remains
 pending the owner's decision; third-party font notices are bundled.
+
+## World expansion proposal — Phase 1 paused
+The long-term game is an expandable isometric farm; nine beds are the starter area.
+[Technical plan and audit](docs/WORLD_EXPANSION_PLAN.md) describes the proposed
+prerequisite refactoring. The core architecture is implemented in Phase 0.75; see docs/QA_PHASE_0_75.md.

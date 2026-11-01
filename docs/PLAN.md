@@ -72,3 +72,19 @@ Phase 0.5 automated checks and desktop screenshot review pass. Physical-device
 safe areas, touch emulation/gesture behavior, mobile GPU/battery/performance and
 native-speaker editorial review remain explicit limitations. Phase 1 gameplay is
 still gated on owner approval after this milestone; no later gate was skipped.
+
+## New world-expansion decision — Phase 1 paused
+The owner has redefined the long-term product as an expandable isometric farm.
+The nine beds are the starter/tutorial region, not a model or save-size limit.
+See `WORLD_EXPANSION_PLAN.md` (Russian) for the audit, grid/object/camera/gesture
+proposal, scalable snapshot strategy, rendering approach, risks and prerequisite
+refactoring gates. This is a proposal only; implementation awaits plan review.
+The unfinished Phase 1 draft was preserved outside the Godot project and the active
+source was restored to accepted Phase 0.5. No Phase 1 gameplay is committed or shipped.
+
+## Phase 0.75 completed
+The accepted expansion plan is implemented: resource-defined starter region, stable
+IDs, occupancy/query model, separate HUD CanvasLayer, bounded Camera2D and gestures,
+versioned atomic world snapshot and migration boundary. See QA_PHASE_0_75.md.
+The later night-sprint request authorizes proceeding to planting/growing after this
+stable milestone; it supersedes the earlier requirement to pause before Phase 1.
