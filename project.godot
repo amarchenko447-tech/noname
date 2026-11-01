@@ -1,0 +1,21 @@
+config_version=5
+
+[application]
+config/name="Mutant Garden"
+run/main_scene="res://scenes/boot/boot.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+config/description="A tiny garden. A little wonder. Phase 0 foundation."
+
+[display]
+window/size/viewport_width=1080
+window/size/viewport_height=1920
+window/size/window_width_override=450
+window/size/window_height_override=800
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+handheld/orientation=1
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.847, 0.941, 0.898, 1)
