@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlantDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/models/plant_definition.gd" id="1"]
+[resource]
+script=ExtResource("1")
+species_id=&"rainbow_tulip"
+name_key="PLANT_RAINBOW_TULIP"
+description_key="DESC_RAINBOW_TULIP"
+seed_cost=150
+growth_seconds=2400
+reward_coins=350

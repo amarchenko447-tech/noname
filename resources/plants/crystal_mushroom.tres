@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlantDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/models/plant_definition.gd" id="1"]
+[resource]
+script=ExtResource("1")
+species_id=&"crystal_mushroom"
+name_key="PLANT_CRYSTAL_MUSHROOM"
+description_key="DESC_CRYSTAL_MUSHROOM"
+seed_cost=80
+growth_seconds=1200
+reward_coins=180

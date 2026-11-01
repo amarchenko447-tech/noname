@@ -22,7 +22,9 @@ environment/defaults/default_clear_color=Color(0.847, 0.941, 0.898, 1)
 
 [autoload]
 SettingsManager="*res://scripts/autoload/settings_manager.gd"
+TimeService="*res://scripts/autoload/time_service.gd"
 WorldService="*res://scripts/autoload/world_service.gd"
+GameState="*res://scripts/autoload/game_state.gd"
 
 [internationalization]
 locale/fallback="en"

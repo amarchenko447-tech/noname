@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlantDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/models/plant_definition.gd" id="1"]
+[resource]
+script=ExtResource("1")
+species_id=&"sunny_carrot"
+name_key="PLANT_SUNNY_CARROT"
+description_key="DESC_SUNNY_CARROT"
+seed_cost=5
+growth_seconds=30
+reward_coins=10
