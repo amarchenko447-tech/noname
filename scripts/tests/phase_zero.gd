@@ -34,14 +34,14 @@ func run() -> void:
 	check(garden.selected_plot == 4 and "5" in garden.context_title.text, "selection updates context")
 	for dimensions in [Vector2i(720, 1280), Vector2i(1080, 1920), Vector2i(1170, 2532), Vector2i(1440, 3200), Vector2i(1080, 2106)]:
 		root.size = dimensions
-		root.content_scale_size = Vector2i(1080, 1920)
+		root.content_scale_size = Vector2i(390, 844)
 		root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
 		root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 		for frame in range(4):
 			await process_frame
 		var viewport_rect: Rect2 = garden.get_global_rect()
 		check(garden.safe.get_global_rect().size.x <= viewport_rect.size.x + 1, "HUD fits width %s" % dimensions)
-		var bounds := Rect2(garden.world.position - Vector2(514, 296) * garden.world.scale, Vector2(1028, 642) * garden.world.scale)
+		var bounds := Rect2(garden.world.position - Vector2(555, 530) * garden.world.scale, Vector2(1110, 990) * garden.world.scale)
 		check(viewport_rect.encloses(bounds), "island fits %s" % dimensions)
 		check(garden.context_body.get_global_rect().end.y < viewport_rect.end.y - 24, "context fits height %s" % dimensions)
 		check(bounds.end.y < garden.context_title.get_global_rect().position.y, "garden clear of bottom card %s" % dimensions)
@@ -49,14 +49,14 @@ func run() -> void:
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
 	event.position = garden.world.get_global_transform_with_canvas() * garden.world.centers[7]
-	root.push_input(event)
+	root.push_input(event, true)
 	await process_frame
 	check(garden.selected_plot == 7, "real mouse input reaches plot through HUD")
 	var touch := InputEventScreenTouch.new()
 	touch.index = 0
 	touch.pressed = true
 	touch.position = garden.world.get_global_transform_with_canvas() * garden.world.centers[2]
-	root.push_input(touch)
+	root.push_input(touch, true)
 	await process_frame
 	check(garden.selected_plot == 2, "real touch input reaches plot through HUD")
 	print("PHASE 0: %d failures" % failures)

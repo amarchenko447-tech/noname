@@ -4,13 +4,13 @@ config_version=5
 config/name="Mutant Garden"
 run/main_scene="res://scenes/boot/boot.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/description="A tiny garden. A little wonder. Phase 0 foundation."
+config/description="A tiny garden. A little wonder. Phase 0.5 garden preview."
 
 [display]
-window/size/viewport_width=1080
-window/size/viewport_height=1920
-window/size/window_width_override=450
-window/size/window_height_override=800
+window/size/viewport_width=390
+window/size/viewport_height=844
+window/size/window_width_override=390
+window/size/window_height_override=844
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 handheld/orientation=1
@@ -19,3 +19,13 @@ handheld/orientation=1
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.847, 0.941, 0.898, 1)
+
+[autoload]
+SettingsManager="*res://scripts/autoload/settings_manager.gd"
+
+[internationalization]
+locale/fallback="en"
+locale/translations=PackedStringArray("res://localization/ui.en.translation", "res://localization/ui.ru.translation", "res://localization/ui.pl.translation", "res://localization/ui.es.translation", "res://localization/ui.de.translation", "res://localization/ui.fr.translation", "res://localization/ui.pt_BR.translation")
+
+[input_devices]
+pointing/emulate_mouse_from_touch=true

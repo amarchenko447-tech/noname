@@ -1,8 +1,9 @@
 class_name GardenStrings
 extends RefCounted
-const TITLE = "Mutant Garden"
-const TAGLINE = "A tiny garden. A little wonder."
-const EMPTY = "Your story starts with a seed"
-const HINT = "Tap a garden bed to look closer."
-const SELECTED = "Garden bed %d · Empty"
-const FOUNDATION = "Your garden is taking root. Planting arrives in the next phase."
+## Stable translation keys. Translated names never serve as gameplay IDs.
+const TITLE = "GAME_TITLE"
+const TAGLINE = "GAME_TAGLINE"
+const EMPTY = "GARDEN_WELCOME"
+const HINT = "PLOT_HINT"
+const SELECTED = "PLOT_TITLE"
+const FOUNDATION = "PLOT_SELECTED_HINT"

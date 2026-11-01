@@ -42,3 +42,10 @@ project.godot and .gitignore; README; boot/garden scenes; UI/world/strings scrip
 
 ## Gate / next step
 Automated Phase 0 foundation checks pass. Human visual review is pending. Stop here for owner review; Phase 1 vertical slice requires approval.
+
+## Superseding visual review
+Phase 0.5 subsequently implemented visual polish, phone-sized typography, expanded
+touch targets and seven-language localization. See `QA_PHASE_0_5.md` for current
+results and `screenshots/phase_0_5/README.md` for actual rendered screenshots.
+The earlier "graphical review not run" limitation above is historical; device QA
+and mobile performance remain unverified.

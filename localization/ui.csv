@@ -1,0 +1,77 @@
+keys,en,ru,pl,es,de,fr,pt_BR
+GAME_TITLE,Mutant Garden,Mutant Garden,Mutant Garden,Mutant Garden,Mutant Garden,Mutant Garden,Mutant Garden
+GAME_TAGLINE,A tiny garden. A little wonder.,Маленький сад. Немного волшебства.,Mały ogród. Odrobina magii.,Un pequeño jardín lleno de magia.,Ein kleiner Garten voller Wunder.,Un petit jardin plein de merveilles.,Um pequeno jardim cheio de magia.
+UI_COINS,Coins,Монеты,Monety,Monedas,Münzen,Pièces,Moedas
+GARDEN_LEVEL,Lv. %d · Seedling,Ур. %d · Росток,Poz. %d · Kiełek,Nv. %d · Brote,St. %d · Keimling,Niv. %d · Pousse,Nv. %d · Broto
+UI_COLLECTION,Field notes,Дневник,Zielnik,Herbario,Pflanzenbuch,Herbier,Herbário
+UI_COLLECTION_PROGRESS,%s / %s discoveries,Открыто: %s из %s,Odkrycia: %s / %s,Hallazgos: %s / %s,Entdeckt: %s / %s,Découvertes : %s / %s,Descobertas: %s / %s
+UI_GARDEN,Garden,Сад,Ogród,Jardín,Garten,Jardin,Jardim
+UI_GUIDE,Guide,Справка,Pomoc,Ayuda,Hilfe,Aide,Ajuda
+UI_SETTINGS,Settings,Настройки,Ustawienia,Ajustes,Einstellungen,Réglages,Configurações
+UI_LANGUAGE,Language,Язык,Język,Idioma,Sprache,Langue,Idioma
+UI_BACK,Back,Назад,Wstecz,Volver,Zurück,Retour,Voltar
+UI_CLOSE,Close,Закрыть,Zamknij,Cerrar,Schließen,Fermer,Fechar
+UI_PLAY,Play,Играть,Graj,Jugar,Spielen,Jouer,Jogar
+UI_REDUCED_MOTION,Reduced motion,Меньше движения,Ogranicz ruch,Reducir movimiento,Weniger Bewegung,Réduire les animations,Reduzir movimento
+UI_LANGUAGE_HINT,Choose your garden’s language.,Выберите язык вашего сада.,Wybierz język swojego ogrodu.,Elige el idioma de tu jardín.,Wähle die Sprache deines Gartens.,Choisissez la langue du jardin.,Escolha o idioma do seu jardim.
+UI_SETTINGS_HINT,Make yourself at home.,Устраивайтесь поудобнее.,Poczuj się jak u siebie.,Siéntete como en casa.,Mach es dir gemütlich.,Faites comme chez vous.,Sinta-se em casa.
+UI_LOCAL_ONLY,Preferences stay on this device.,Настройки хранятся на устройстве.,Ustawienia zostają na urządzeniu.,Los ajustes se guardan aquí.,Einstellungen bleiben auf dem Gerät.,Les réglages restent sur cet appareil.,Preferências ficam neste aparelho.
+SAVE_SETTINGS_ERROR,Could not save preferences. Please try again.,Не удалось сохранить настройки. Повторите попытку.,Nie udało się zapisać ustawień. Spróbuj ponownie.,No se pudieron guardar los ajustes. Reinténtalo.,Speichern fehlgeschlagen. Bitte erneut versuchen.,Échec de l’enregistrement. Veuillez réessayer.,Não foi possível salvar. Tente novamente.
+GARDEN_WELCOME,Your little patch of possibility,Ваш уголок волшебства,Twój mały zakątek magii,Tu rincón de posibilidades,Dein kleines Stück Gartenglück,Votre petit coin de magie,Seu cantinho de possibilidades
+GARDEN_SUBTITLE,Nine beds. Endless possibilities.,Девять грядок. Море открытий.,Dziewięć grządek. Tyle możliwości.,Nueve parcelas. Mil posibilidades.,Neun Beete. Unzählige Möglichkeiten.,Neuf parcelles. Tant de possibilités.,Nove canteiros. Tantas possibilidades.
+PLOT_TITLE,Garden bed %d,Грядка %d,Grządka %d,Parcela %d,Gartenbeet %d,Parcelle %d,Canteiro %d
+PLOT_EMPTY,Empty bed,Пустая грядка,Pusta grządka,Parcela vacía,Leeres Beet,Parcelle vide,Canteiro vazio
+PLOT_HINT,Tap a bed. Make yourself at home.,Коснитесь грядки. Осмотритесь в саду.,Dotknij grządki. Poczuj się jak u siebie.,Toca una parcela y explora tu jardín.,Tippe auf ein Beet und schau dich um.,Touchez une parcelle et explorez.,Toque num canteiro e explore.
+PLOT_SELECTED_HINT,A sunny spot for something wonderful.,Солнечное место для будущих чудес.,Słoneczne miejsce na coś pięknego.,Un rincón soleado para algo especial.,Ein Sonnenplatz für etwas Wunderbares.,Un coin au soleil pour de belles pousses.,Um lugar ao sol para algo especial.
+ACTION_NEXT_BED,Next bed,Другая грядка,Kolejna grządka,Otra parcela,Nächstes Beet,Autre parcelle,Outro canteiro
+ACTION_EXPLORE,Explore the garden,Осмотреть сад,Odkryj ogród,Explorar el jardín,Garten erkunden,Explorer le jardin,Explorar o jardim
+UI_GUIDE_TITLE,A little room to grow,Место для будущих чудес,Miejsce na małe cuda,Un lugar para crecer,Platz für kleine Wunder,Un petit coin pour grandir,Um lugar para florescer
+UI_GUIDE_BODY,Tap any bed to look closer. Admire the flowers and follow the butterflies with your eyes. Planting and harvesting arrive in the next stage.,"Коснитесь грядки, чтобы выбрать её. Полюбуйтесь цветами и бабочками. Посадка и сбор урожая появятся на следующем этапе.","Dotknij grządki, aby ją wybrać. Podziwiaj kwiaty i motyle. Sadzenie i zbiory pojawią się na kolejnym etapie.",Toca una parcela para elegirla. Disfruta de las flores y mariposas. Plantar y cosechar llegará en la próxima etapa.,"Tippe auf ein Beet, um es auszuwählen. Genieße Blumen und Schmetterlinge. Pflanzen und Ernten folgen im nächsten Abschnitt.",Touchez une parcelle pour la choisir. Admirez les fleurs et les papillons. Les plantations et récoltes arriveront à la prochaine étape.,Toque num canteiro para selecioná-lo. Admire flores e borboletas. Plantar e colher chegará na próxima etapa.
+UI_NOTES_BODY,A page for every little discovery. Your 24 plant and mutation entries will grow here when gardening begins.,"Здесь найдётся страница для каждого открытия. Когда начнётся выращивание, дневник пополнится 24 видами растений и мутаций.","Miejsce na każde odkrycie. Gdy zaczniesz uprawę, zapełnisz 24 wpisy o roślinach i mutacjach.",Un lugar para cada hallazgo. Al empezar a cultivar podrás descubrir 24 combinaciones de plantas y mutaciones.,Ein Platz für jede Entdeckung. Mit dem Gärtnern füllen sich hier 24 Einträge zu Pflanzen und Mutationen.,"Une page pour chaque découverte. Avec les plantations, 24 combinaisons de plantes et mutations enrichiront cet herbier.","Uma página para cada descoberta. Quando o cultivo começar, haverá 24 combinações de plantas e mutações para descobrir."
+UI_OK,Lovely,Отлично,Świetnie,Qué bien,Wunderbar,À merveille,Que legal
+ACTION_PLANT,Plant,Посадить,Posadź,Plantar,Pflanzen,Planter,Plantar
+ACTION_WATER,Water,Полить,Podlej,Regar,Gießen,Arroser,Regar
+ACTION_HARVEST,Harvest,Собрать,Zbierz,Cosechar,Ernten,Récolter,Colher
+ACTION_SELL,Sell,Продать,Sprzedaj,Vender,Verkaufen,Vendre,Vender
+ACTION_KEEP,Keep,Оставить,Zachowaj,Guardar,Behalten,Garder,Guardar
+SHOP_TITLE,Seed shop,Магазин семян,Sklep z nasionami,Tienda de semillas,Samenladen,Boutique de graines,Loja de sementes
+SHOP_INSUFFICIENT_COINS,Not enough coins,Недостаточно монет,Za mało monet,Faltan monedas,Nicht genug Münzen,Pas assez de pièces,Moedas insuficientes
+PLANT_RARITY_RARE,Rare,Редкое,Rzadkie,Rara,Selten,Rare,Rara
+MUTATION_DISCOVERED,New discovery: %s!,Новое открытие: %s!,Nowe odkrycie: %s!,¡Nuevo hallazgo: %s!,Neue Entdeckung: %s!,Nouvelle découverte : %s !,Nova descoberta: %s!
+VARIANT_NORMAL,Normal,Обычное,Zwykłe,Normal,Normal,Normale,Normal
+VARIANT_GOLDEN,Golden,Золотое,Złote,Dorada,Golden,Dorée,Dourada
+VARIANT_GIANT,Giant,Гигантское,Olbrzymie,Gigante,Riesig,Géante,Gigante
+VARIANT_PRISMATIC,Prismatic,Радужное,Pryzmatyczne,Prismática,Prismatisch,Prismatique,Prismática
+PLANT_DAISY,Moon Daisy,Лунная ромашка,Księżycowa stokrotka,Margarita lunar,Mondblümchen,Marguerite lunaire,Margarida lunar
+PLANT_CARROT,Ember Carrot,Огненная морковь,Żarząca marchew,Zanahoria de brasa,Glutkarotte,Carotte de braise,Cenoura de brasa
+PLANT_MINT,Cloud Mint,Облачная мята,Chmurkowa mięta,Menta de nube,Wolkenminze,Menthe nuage,Hortelã de nuvem
+PLANT_TULIP,Star Tulip,Звёздный тюльпан,Gwiezdny tulipan,Tulipán estelar,Sterntulpe,Tulipe étoilée,Tulipa estelar
+PLANT_BERRY,Glowberry,Светоягода,Świetlista jagoda,Baya luminosa,Leuchtbeere,Baie lumineuse,Baga luminosa
+PLANT_ORCHID,Dream Orchid,Орхидея грёз,Orchidea snów,Orquídea de ensueño,Traumorchidee,Orchidée des rêves,Orquídea dos sonhos
+PLANT_DAISY_DESC,A small flower with a moon-blue heart.,Маленький цветок с лунно-голубой сердцевиной.,Mały kwiat o księżycowo-błękitnym sercu.,Una pequeña flor con corazón azul lunar.,Eine kleine Blume mit mondblauem Herzen.,Une petite fleur au cœur bleu de lune.,Uma flor pequena com coração azul-luar.
+PLANT_CARROT_DESC,A warm coral root with a cheerful leafy crown.,Коралловый корнеплод с весёлой зелёной ботвой.,Koralowy korzeń z wesołą koroną liści.,Una raíz coralina con una alegre corona de hojas.,Eine korallenrote Wurzel mit fröhlicher Blattkrone.,Une racine corail coiffée de feuilles joyeuses.,Uma raiz coral com uma alegre coroa de folhas.
+PLANT_MINT_DESC,Pale green leaves as soft as a passing cloud.,"Нежно-зелёные листья, мягкие словно облако.",Jasnozielone liście miękkie jak chmurka.,"Hojas verde claro, suaves como una nube.","Hellgrüne Blätter, weich wie eine Wolke.","Des feuilles vert pâle, douces comme un nuage.","Folhas verde-claras, suaves como uma nuvem."
+PLANT_TULIP_DESC,Lavender petals open into a tiny star.,Лавандовые лепестки раскрываются маленькой звездой.,Lawendowe płatki otwierają się jak gwiazdka.,Pétalos lavanda que se abren como una estrella.,Lavendelfarbene Blüten öffnen sich zum Stern.,Des pétales lavande s’ouvrent en petite étoile.,Pétalas lavanda se abrem numa pequena estrela.
+PLANT_BERRY_DESC,Cyan berries bring a little glow to the dusk.,Голубые ягоды мягко светятся в сумерках.,Błękitne jagody rozświetlają zmierzch.,Bayas cian que iluminan el atardecer.,Türkise Beeren bringen Licht in die Dämmerung.,Des baies cyan illuminent le crépuscule.,Bagas ciano iluminam o entardecer.
+PLANT_ORCHID_DESC,A dreamy flower dressed in pink and violet.,Мечтательный цветок в розово-фиолетовом наряде.,Bajkowy kwiat w różu i fiolecie.,Una flor de ensueño vestida de rosa y violeta.,Eine verträumte Blume in Rosa und Violett.,Une fleur de rêve vêtue de rose et de violet.,Uma flor dos sonhos vestida de rosa e violeta.
+TUTORIAL_PLANT,Tap a plot to plant your first seed.,"Коснитесь грядки, чтобы посадить первое семечко.","Dotknij grządki, aby posadzić pierwsze nasiono.",Toca una parcela para plantar tu primera semilla.,Tippe auf ein Beet für deinen ersten Samen.,Touchez une parcelle pour planter une graine.,Toque num canteiro para plantar sua primeira semente.
+TUTORIAL_CHOOSE,Choose a seed. Each plant grows at its own pace.,Выберите семена. Каждое растение растёт в своём темпе.,Wybierz nasiono. Każda roślina rośnie w swoim tempie.,Elige una semilla. Cada planta crece a su ritmo.,Wähle einen Samen. Jede Pflanze wächst in ihrem Tempo.,Choisissez une graine. Chaque plante a son rythme.,Escolha uma semente. Cada planta cresce no seu ritmo.
+TUTORIAL_WATER,Water once to give it a little boost.,"Полейте один раз, чтобы ускорить рост.","Podlej raz, aby nieco przyspieszyć wzrost.",Riega una vez para darle un pequeño impulso.,"Gieße einmal, um das Wachstum anzukurbeln.",Arrosez une fois pour accélérer la pousse.,Regue uma vez para dar um impulso ao crescimento.
+TUTORIAL_READY,Your first plant is ready!,Ваше первое растение готово!,Twoja pierwsza roślina jest gotowa!,¡Tu primera planta está lista!,Deine erste Pflanze ist fertig!,Votre première plante est prête !,Sua primeira planta está pronta!
+TUTORIAL_HARVEST,"Harvest plants, discover mutations, and grow your collection!","Собирайте урожай, открывайте мутации и пополняйте коллекцию!","Zbieraj plony, odkrywaj mutacje i powiększaj kolekcję!","¡Cosecha, descubre mutaciones y amplía tu colección!","Ernte, entdecke Mutationen und erweitere deine Sammlung!","Récoltez, découvrez des mutations et enrichissez votre collection !","Colha, descubra mutações e amplie sua coleção!"
+TUTORIAL_SHOP,Spend coins on more seeds and decorations.,Тратьте монеты на семена и украшения.,Wydawaj monety na nasiona i ozdoby.,Gasta monedas en semillas y adornos.,Kaufe Samen und Dekoration mit Münzen.,Achetez des graines et des décorations.,Use moedas para comprar sementes e enfeites.
+TUTORIAL_SKIP,Skip tutorial,Пропустить обучение,Pomiń samouczek,Omitir tutorial,Einführung überspringen,Passer le tutoriel,Pular tutorial
+NOTIFICATION_READY,Your garden is ready to harvest.,В вашем саду созрел урожай.,Twój ogród czeka na zbiory.,Tu jardín está listo para cosechar.,Dein Garten ist bereit zur Ernte.,Votre jardin est prêt pour la récolte.,Seu jardim está pronto para colher.
+NOTIFICATION_AWAY,Your garden grew while you were away.,"Ваш сад подрос, пока вас не было.",Twój ogród urósł podczas nieobecności.,Tu jardín creció mientras no estabas.,Dein Garten ist in deiner Abwesenheit gewachsen.,Votre jardin a poussé en votre absence.,Seu jardim cresceu enquanto você estava fora.
+SAVE_GAME_ERROR,Could not save your garden. Retrying…,Не удалось сохранить сад. Повторная попытка…,Nie udało się zapisać ogrodu. Ponawiam…,No se pudo guardar el jardín. Reintentando…,Garten konnte nicht gespeichert werden. Neuer Versuch…,Impossible d’enregistrer le jardin. Nouvel essai…,Não foi possível salvar o jardim. Tentando novamente…
+TIME_SECONDS,%d sec,%d сек,%d s,%d s,%d Sek.,%d s,%d s
+TIME_MINUTES,%d min,%d мин,%d min,%d min,%d Min.,%d min,%d min
+TIME_HOURS,%dh %02dm,%d ч %02d мин,%d godz. %02d min,%d h %02d min,%d Std. %02d Min.,%d h %02d min,%d h %02d min
+PRICE_COINS,%s coins,%s монет,%s monet,%s monedas,%s Münzen,%s pièces,%s moedas
+LOCALE_EN,English,English,English,English,English,English,English
+LOCALE_RU,Русский,Русский,Русский,Русский,Русский,Русский,Русский
+LOCALE_PL,Polski,Polski,Polski,Polski,Polski,Polski,Polski
+LOCALE_ES,Español,Español,Español,Español,Español,Español,Español
+LOCALE_DE,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch
+LOCALE_FR,Français,Français,Français,Français,Français,Français,Français
+LOCALE_PT_BR,Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil)

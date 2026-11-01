@@ -46,3 +46,29 @@ Future tests cover time jumps, 48h resume, corruption and backup, 20 repeated cl
 
 ## Phase 0 review gate
 Review foundation and run the manual desktop smoke steps in QA.md. Stop before gameplay, autoload persistence or later content. Headless foundation checks pass; visual/mobile acceptance remains open.
+
+## Phase 0.5 — authorized visual polish and localization addendum
+Completed between the Phase 0 review and Phase 1. The latest user requirements
+extend the original English-only UI to seven languages. They also authorize a
+preferences-only SettingsManager now, rather than deferring all settings to Phase 5.
+
+Architecture remains boot → garden, Node2D world + Control HUD + separate PlotData.
+World art is split into cached environment and bed nodes, shared drawing primitives,
+a small ambient layer and original icon/backdrop components. Text and controls use
+a 390×844 logical reference for real mobile readability; the 1080-unit artwork
+scales independently. Stable plot IDs and model semantics are unchanged.
+
+New UX: complete 48×48 logical center squares per plot; nearest-center candidate
+resolution with stable ID ties; 180ms bounce/glow; immediate selection; working
+Next bed, Guide, Field notes information and gear/settings. No fake planting or
+purchasing actions. Level/coins/collection remain foundation presentation values.
+
+Localization: TranslationServer + UTF-8 CSV/generated translations, seven locales,
+regional OS mapping with English fallback, immediate rebinding without scene reload,
+separate atomic preferences file, font/diacritic and long-layout verification.
+See LOCALIZATION.md, ART_GUIDE.md and QA_PHASE_0_5.md for details and evidence.
+
+Phase 0.5 automated checks and desktop screenshot review pass. Physical-device
+safe areas, touch emulation/gesture behavior, mobile GPU/battery/performance and
+native-speaker editorial review remain explicit limitations. Phase 1 gameplay is
+still gated on owner approval after this milestone; no later gate was skipped.

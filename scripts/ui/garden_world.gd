@@ -1,68 +1,104 @@
 extends Node2D
-## Original vector placeholders; nine disjoint diamond hit regions.
+## Scene coordinator; static scenery, independent soil nodes and lightweight ambience.
 signal plot_selected(index: int)
+const Art = preload("res://scripts/ui/garden_drawing.gd")
+const EnvironmentArt = preload("res://scripts/ui/garden_environment.gd")
+const Ambience = preload("res://scripts/ui/garden_ambience.gd")
+const Bed = preload("res://scripts/ui/garden_bed.gd")
+const BOUNCE_DURATION: float = 0.18
 var centers: Array[Vector2] = []
+var beds: Array[Node2D] = []
 var selected: int = -1
-const TILE = [Vector2(0, -72), Vector2(146, 0), Vector2(0, 72), Vector2(-146, 0)]
+var touch_half_size: float = 72.0
+var ambience: Node2D
+var reduced_motion: bool = false
+var animate: bool = true
+var animation_time: float = 0.0
+var selection_elapsed: float = 1.0
+var _accumulator: float = 0.0
 
 func _ready() -> void:
+	var environment := EnvironmentArt.new()
+	environment.z_index = -10
+	add_child(environment)
 	for row in range(3):
 		for col in range(3):
-			centers.append(Vector2((col - row) * 160, (col + row - 2) * 83))
+			var point := Vector2((col - row) * 160, (col + row - 2) * 128)
+			centers.append(point)
+			var bed := Bed.new()
+			bed.bed_id = row * 3 + col
+			bed.position = point
+			bed.z_index = int(point.y) + 300
+			beds.append(bed)
+			add_child(bed)
+	ambience = Ambience.new()
+	ambience.z_index = 1000
+	add_child(ambience)
+	z_as_relative = true
+
+func _process(delta: float) -> void:
+	if not animate or not is_visible_in_tree() or reduced_motion:
+		return
+	selection_elapsed += delta
+	_accumulator += delta
+	if _accumulator >= 1.0 / 30.0:
+		animation_time = fmod(animation_time + _accumulator, 60.0)
+		_accumulator = 0.0
+		_apply_bounce()
+		if selected >= 0:
+			queue_redraw()
+
+func _apply_bounce() -> void:
+	if selected < 0:
+		return
+	var progress: float = clampf(selection_elapsed / BOUNCE_DURATION, 0, 1)
+	var lift: float = sin(progress * PI) if not reduced_motion else 0.0
+	beds[selected].position = centers[selected] - Vector2(0, lift * 10)
+	beds[selected].scale = Vector2.ONE * (1.0 + lift * 0.035)
+
+func set_motion_reduced(value: bool) -> void:
+	reduced_motion = value
+	ambience.set_motion_reduced(value)
+	_apply_bounce()
 	queue_redraw()
 
-func _diamond(center: Vector2, width: float, height: float, color: Color) -> void:
-	draw_colored_polygon(PackedVector2Array([center + Vector2(0, -height), center + Vector2(width, 0), center + Vector2(0, height), center + Vector2(-width, 0)]), color)
+func select_plot(index: int) -> void:
+	if index < 0 or index >= centers.size():
+		return
+	if selected >= 0:
+		beds[selected].position = centers[selected]
+		beds[selected].scale = Vector2.ONE
+	selected = index
+	selection_elapsed = 0.0
+	queue_redraw()
+	plot_selected.emit(index)
 
 func _draw() -> void:
-	# Soft island shadow, earth depth, grass top and inset lawn.
-	draw_set_transform(Vector2(0, 85), 0, Vector2(1, 0.48))
-	draw_circle(Vector2.ZERO, 500, Color(0.22, 0.38, 0.28, 0.10))
-	draw_set_transform(Vector2.ZERO)
-	_diamond(Vector2(0, 50), 514, 296, Color("9b8060"))
-	_diamond(Vector2(0, 25), 514, 296, Color("639c69"))
-	_diamond(Vector2.ZERO, 514, 296, Color("8bcf8a"))
-	_diamond(Vector2(0, -7), 478, 269, Color("a4d995"))
-	for i in range(centers.size()):
-		var point := centers[i]
-		_diamond(point + Vector2(0, 12), 148, 74, Color("785640"))
-		_diamond(point, 148, 74, Color("bf9470"))
-		_diamond(point, 135, 64, Color("9a6a52"))
-		_diamond(point + Vector2(0, -4), 122, 53, Color("aa795c"))
-		for furrow in range(-2, 3):
-			var x: float = furrow * 26.0
-			draw_line(point + Vector2(x - 28, -14), point + Vector2(x + 28, 14), Color("916348"), 4, true)
-		if i == selected:
-			var outline := PackedVector2Array()
-			for vertex in TILE:
-				outline.append(point + vertex)
-			outline.append(point + TILE[0])
-			draw_polyline(outline, Color("fff3bd"), 7, true)
-	# Border botanicals, stones and tiny daisies outside all hit targets.
-	for i in range(18):
-		var angle: float = TAU * i / 18.0
-		var point := Vector2(cos(angle) * 447, sin(angle) * 247)
-		if absf(point.x) + absf(point.y) * 1.75 > 484:
-			continue
-		draw_circle(point, 7, Color("6fae78"))
-		draw_line(point, point + Vector2(0, -15), Color("4e865d"), 3, true)
-		if i % 3 == 0:
-			for petal in range(5):
-				var direction := Vector2.from_angle(TAU * petal / 5.0)
-				draw_circle(point + Vector2(0, -19) + direction * 7, 5, Color("fff7e8"))
-			draw_circle(point + Vector2(0, -19), 4, Color("f5c45e"))
-	for point in [Vector2(-380, 125), Vector2(375, 128), Vector2(90, 263)]:
-		draw_set_transform(point, -0.2, Vector2(1.5, 0.7))
-		draw_circle(Vector2.ZERO, 12, Color("dfddc1"))
-		draw_circle(Vector2(-2, -3), 8, Color("f4efda"))
-	draw_set_transform(Vector2.ZERO)
+	# A narrow outside outline only. It never covers the soil artwork.
+	if selected < 0 or centers.is_empty():
+		return
+	var pulse: float = 0.0 if reduced_motion else (sin(animation_time * TAU / 2.8) + 1) * 0.5
+	var point: Vector2 = centers[selected]
+	var outline := Art.diamond(point, Vector2(155, 108))
+	Art.outline(self, outline, Color(1, 0.91, 0.57, 0.12 + pulse * 0.09), 18)
+	Art.outline(self, outline, Color("648654"), 6)
+	Art.outline(self, outline, Color(1, 0.97, 0.69, 0.85 + pulse * 0.15), 3)
 
 func plot_at(point: Vector2) -> int:
+	# Union visual diamonds with >=48px squares around centers. All candidates
+	# are resolved by Euclidean distance; exact ties keep the smaller stable ID.
+	var nearest: int = -1
+	var best_distance: float = INF
 	for i in range(centers.size()):
 		var relative := point - centers[i]
-		if absf(relative.x) / 146.0 + absf(relative.y) / 72.0 <= 1.0:
-			return i
-	return -1
+		var in_square: bool = maxf(absf(relative.x), absf(relative.y)) <= touch_half_size + 0.01
+		var in_diamond: bool = absf(relative.x) / 151.0 + absf(relative.y) / 106.0 <= 1.0
+		if in_square or in_diamond:
+			var distance: float = relative.length_squared()
+			if distance < best_distance - 0.001:
+				best_distance = distance
+				nearest = i
+	return nearest
 
 func _unhandled_input(event: InputEvent) -> void:
 	var pressed := false
@@ -76,7 +112,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if pressed:
 		var index := plot_at(get_global_transform_with_canvas().affine_inverse() * screen_position)
 		if index >= 0:
-			selected = index
-			queue_redraw()
-			plot_selected.emit(index)
+			select_plot(index)
 			get_viewport().set_input_as_handled()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_PAUSED:
+		set_process(false)
+		if is_instance_valid(ambience):
+			ambience.set_process(false)
+	elif what == NOTIFICATION_APPLICATION_RESUMED:
+		set_process(true)
+		if is_instance_valid(ambience):
+			ambience.set_process(true)
