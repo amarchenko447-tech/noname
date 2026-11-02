@@ -2,6 +2,7 @@ extends Node2D
 ## WorldView: projects model records, never creates gameplay state or handles input.
 signal plot_selected(id: StringName)
 const Art = preload("res://scripts/ui/garden_drawing.gd")
+const StaticArt = preload("res://scripts/ui/static_art_cache.gd")
 const EnvironmentArt = preload("res://scripts/ui/garden_environment.gd")
 const Ambience = preload("res://scripts/ui/garden_ambience.gd")
 const Bed = preload("res://scripts/ui/garden_bed.gd")
@@ -16,6 +17,7 @@ var crop_views: Dictionary = {}
 var crop_badges: Dictionary = {}
 var active_effects: Dictionary = {}
 var plant_bumps: Dictionary = {}
+var bump_tweens: Dictionary = {}
 var harvest_ghosts: Array[Node2D] = []
 var object_root: Node2D
 var selected_id: StringName = &""
@@ -27,7 +29,9 @@ var animation_time: float = 0.0
 var selection_elapsed: float = 1.0
 var _accumulator: float = 0.0
 func _ready() -> void:
-	var environment := EnvironmentArt.new()
+	var environment := StaticArt.new()
+	environment.artist_script = EnvironmentArt
+	environment.bounds = Rect2(-600,-600,1200,1150)
 	environment.z_index = -2
 	add_child(environment)
 	object_root = Node2D.new()
@@ -42,6 +46,7 @@ func _ready() -> void:
 func rebuild(source: RefCounted) -> void:
 	model = source
 	_clear_ghosts()
+	_clear_bumps()
 	for view in view_roots.values():
 		object_root.remove_child(view)
 		view.queue_free()
@@ -62,7 +67,8 @@ func rebuild(source: RefCounted) -> void:
 		root.position = model.sort_anchor(record)
 		object_root.add_child(root)
 		view_roots[id] = root
-		var bed := Bed.new()
+		var bed := StaticArt.new()
+		bed.artist_script = Bed
 		bed.art_seed = record.art_seed
 		bed.position = point - root.position
 		# One shared YSort across all future regions; never world_y as z_index.
@@ -78,9 +84,10 @@ func _process(delta: float) -> void:
 	selection_elapsed += delta
 	_accumulator += delta
 	if _accumulator >= 1.0 / 30.0:
-		animation_time = fmod(animation_time + _accumulator, 60.0)
+		animation_time += _accumulator
 		_accumulator = 0.0
-		_apply_bounce()
+		if selection_elapsed <= BOUNCE_DURATION + delta or not plant_bumps.is_empty():
+			_apply_bounce()
 		for id in crop_views:
 			crop_views[id].idle_time = animation_time + model.get_object(id).art_seed * 0.13
 			crop_views[id].queue_redraw()
@@ -100,6 +107,7 @@ func set_motion_reduced(value: bool) -> void:
 	reduced_motion = value
 	if value:
 		_clear_ghosts()
+		_clear_bumps()
 	ambience.set_motion_reduced(value)
 	for visual in crop_views.values():
 		visual.set_reduced_motion(value)
@@ -167,6 +175,7 @@ func sync_crops() -> void:
 				crop_badges[id].queue_free()
 				crop_badges.erase(id)
 			active_effects.erase(id)
+			_cancel_bump(id)
 	for id in WorldService.gameplay.crops:
 		if not views.has(id):
 			continue
@@ -220,12 +229,16 @@ func play_crop_effect(id: StringName, kind: StringName) -> void:
 		active_effects[id] = true
 	crop_views[id].play_effect(kind)
 	if kind == &"plant" and not reduced_motion:
+		_cancel_bump(id)
 		plant_bumps[id] = 0.0
 		var tween := create_tween()
+		bump_tweens[id] = tween
 		tween.tween_method(func(p: float) -> void:
 			plant_bumps[id] = p
 			_apply_bounce(),0.0,1.0,0.45)
-		tween.tween_callback(func() -> void: plant_bumps.erase(id))
+		tween.tween_callback(func() -> void:
+			plant_bumps.erase(id)
+			bump_tweens.erase(id))
 func harvest_ghost(id: StringName, species: StringName) -> void:
 	if not centers.has(id):
 		return
@@ -259,3 +272,13 @@ func _clear_ghosts() -> void:
 				tween.kill()
 			ghost.queue_free()
 	harvest_ghosts.clear()
+
+func _cancel_bump(id: StringName) -> void:
+	if bump_tweens.has(id):
+		bump_tweens[id].kill()
+		bump_tweens.erase(id)
+	plant_bumps.erase(id)
+func _clear_bumps() -> void:
+	for id in bump_tweens.keys():
+		_cancel_bump(id)
+	plant_bumps.clear()

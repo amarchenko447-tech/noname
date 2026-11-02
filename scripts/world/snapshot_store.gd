@@ -9,6 +9,7 @@ var status: String = "new"
 var last_good: Dictionary = {}
 var migrations: Dictionary = {}
 var simulate_write_failure: bool = false
+var recovery_archive: String = ""
 func _init(storage_path: String, version: int = CURRENT_VERSION) -> void:
 	path = storage_path
 	target_version = version
@@ -46,6 +47,7 @@ func _read(file_path: String) -> Variant:
 	return parser.data if error == OK else null
 func load_snapshot(validate: Callable) -> Dictionary:
 	last_good = {}
+	recovery_archive = ""
 	migrated = false
 	if not FileAccess.file_exists(path) and not FileAccess.file_exists(backup_path()):
 		status = "new"
@@ -67,6 +69,11 @@ func load_snapshot(validate: Callable) -> Dictionary:
 func commit(candidate: Dictionary) -> bool:
 	if status == "blocked" or simulate_write_failure:
 		return false
+	if status == "recovered" and recovery_archive.is_empty() and FileAccess.file_exists(path):
+		var archive: String = path + ".rejected-" + str(Time.get_ticks_usec())
+		if DirAccess.copy_absolute(path, archive) != OK:
+			return false
+		recovery_archive = archive
 	if not last_good.is_empty() and not _atomic_write(backup_path(), last_good):
 		return false
 	if not _atomic_write(path, candidate):

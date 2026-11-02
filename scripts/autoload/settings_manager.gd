@@ -10,6 +10,8 @@ var settings_path: String = DEFAULT_PATH
 var locale: String = "en"
 var reduced_motion: bool = false
 var last_save_ok: bool = true
+var _last_good_text: String = ""
+var _blocked_preferences: bool = false
 
 func _ready() -> void:
 	load_preferences()
@@ -23,42 +25,89 @@ func resolve_locale(value: String) -> String:
 		return language
 	return "en"
 
+func _valid_config(config: ConfigFile) -> bool:
+	return config.get_value("preferences", "language", "") is String and config.get_value("preferences", "reduced_motion", false) is bool
+
 func load_preferences(path: String = DEFAULT_PATH, system_locale: String = "") -> void:
 	settings_path = path
+	_last_good_text = ""
+	_blocked_preferences = false
 	var config := ConfigFile.new()
 	var result: Error = config.load(settings_path)
-	var stored: Variant = config.get_value("preferences", "language", "") if result == OK else ""
+	var primary_ok: bool = result == OK and _valid_config(config)
+	var needs_write: bool = result == ERR_FILE_NOT_FOUND
+	if not primary_ok and (result != ERR_FILE_NOT_FOUND or FileAccess.file_exists(settings_path + ".backup")):
+		var backup := ConfigFile.new()
+		if backup.load(settings_path + ".backup") == OK and _valid_config(backup) and _preserve_rejected():
+			config = backup
+			primary_ok = true
+			needs_write = true
+		else:
+			_blocked_preferences = true
+	var stored: Variant = config.get_value("preferences", "language", "") if primary_ok else ""
 	var detected: String = OS.get_locale() if system_locale.is_empty() else system_locale
 	locale = resolve_locale(stored if stored is String and not stored.is_empty() else detected)
-	var motion: Variant = config.get_value("preferences", "reduced_motion", false) if result == OK else false
-	reduced_motion = motion if motion is bool else false
+	reduced_motion = config.get_value("preferences", "reduced_motion", false) if primary_ok else false
 	TranslationServer.set_locale(locale)
-	# Persist first-run choice as well as normalized regional variants.
-	_save_preferences()
+	if primary_ok:
+		_last_good_text = config.encode_to_text()
+		needs_write = needs_write or stored != locale
+	last_save_ok = not _blocked_preferences
+	if needs_write and not _blocked_preferences:
+		_save_preferences()
+	elif _blocked_preferences:
+		save_failed.emit()
 	language_changed.emit(locale)
 	motion_changed.emit(reduced_motion)
+
+func _preserve_rejected() -> bool:
+	if not FileAccess.file_exists(settings_path):
+		return true
+	var preserved: String = settings_path + ".rejected-" + str(Time.get_unix_time_from_system()).replace(".","-") + "-" + str(Time.get_ticks_usec())
+	return DirAccess.copy_absolute(settings_path, preserved) == OK
+
+func _explicit_repair() -> void:
+	# A deliberate settings change may repair the file, preserving its old bytes.
+	if _blocked_preferences and _preserve_rejected():
+		_blocked_preferences = false
 
 func set_language(value: String) -> void:
 	locale = resolve_locale(value)
 	TranslationServer.set_locale(locale)
+	_explicit_repair()
 	_save_preferences()
 	language_changed.emit(locale)
 
 func set_reduced_motion(value: bool) -> void:
 	reduced_motion = value
+	_explicit_repair()
 	_save_preferences()
 	motion_changed.emit(value)
+
+func _atomic_text(path: String, text: String) -> bool:
+	var temp: String = path + ".tmp"
+	var file := FileAccess.open(temp, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(text)
+	file.flush()
+	var error: Error = file.get_error()
+	file.close()
+	return error == OK and DirAccess.rename_absolute(temp,path) == OK
 
 func _save_preferences() -> void:
 	var config := ConfigFile.new()
 	config.set_value("preferences", "language", locale)
 	config.set_value("preferences", "reduced_motion", reduced_motion)
-	var temp: String = settings_path + ".tmp"
-	var result: Error = config.save(temp)
-	if result == OK:
-		result = DirAccess.rename_absolute(temp, settings_path)
-	last_save_ok = result == OK
-	if not last_save_ok:
+	var text: String = config.encode_to_text()
+	last_save_ok = not _blocked_preferences
+	if last_save_ok and not _last_good_text.is_empty():
+		last_save_ok = _atomic_text(settings_path + ".backup", _last_good_text)
+	if last_save_ok:
+		last_save_ok = _atomic_text(settings_path, text)
+	if last_save_ok:
+		_last_good_text = text
+	else:
 		save_failed.emit()
 
 func format_integer(value: int) -> String:

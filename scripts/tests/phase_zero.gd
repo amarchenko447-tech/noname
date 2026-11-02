@@ -49,6 +49,11 @@ func run() -> void:
 		check(viewport_rect.encloses(bounds), "island fits %s" % dimensions)
 		check(garden.context_body.get_global_rect().end.y < viewport_rect.end.y - 24, "context fits height %s" % dimensions)
 		check(bounds.end.y < garden.context_title.get_global_rect().position.y, "garden clear of bottom card %s" % dimensions)
+	# Input checks use the normal interaction framing; compact views begin in overview.
+	root.size = Vector2i(390,844)
+	for frame in range(8):
+		await process_frame
+	farm._focus_garden()
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true

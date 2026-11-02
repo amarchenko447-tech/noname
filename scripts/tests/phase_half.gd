@@ -40,6 +40,7 @@ func run() -> void:
 	var original_locale: String = settings.locale
 	var test_path: String = "user://qa_preferences.cfg"
 	DirAccess.remove_absolute(test_path)
+	DirAccess.remove_absolute(test_path + ".backup")
 	settings.load_preferences(test_path, "es_MX")
 	check(settings.locale == "es", "first run uses supported regional OS language")
 	settings.set_language("pl")
@@ -152,16 +153,16 @@ func run() -> void:
 	world.select_plot(plot_ids[0])
 	world.selection_elapsed = 0.09
 	world._apply_bounce()
-	check(world.views[plot_ids[0]].get_global_position().y < world.centers[plot_ids[0]].y, "180ms bounce lifts at midpoint")
+	check(world.to_local(world.views[plot_ids[0]].get_global_position()).y < world.centers[plot_ids[0]].y, "180ms bounce lifts at midpoint")
 	world.selection_elapsed = 0.18
 	world._apply_bounce()
-	check(world.views[plot_ids[0]].get_global_position().is_equal_approx(world.centers[plot_ids[0]]), "bounce finishes at 180ms")
+	check(world.to_local(world.views[plot_ids[0]].get_global_position()).is_equal_approx(world.centers[plot_ids[0]]), "bounce finishes at 180ms")
 	settings.set_reduced_motion(true)
 	check(world.reduced_motion and world.ambience.reduced_motion, "reduced motion reaches all effects")
 	world.select_plot(plot_ids[2])
 	world.selection_elapsed = 0.09
 	world._apply_bounce()
-	check(world.views[plot_ids[2]].get_global_position() == world.centers[plot_ids[2]], "reduced motion disables bounce")
+	check(world.to_local(world.views[plot_ids[2]].get_global_position()).is_equal_approx(world.centers[plot_ids[2]]), "reduced motion disables bounce")
 	settings.set_reduced_motion(false)
 	# Decorative animation phases must never alter touch resolution.
 	for phase in [0.0, 2.25, 7.0]:
@@ -202,6 +203,7 @@ func run() -> void:
 	settings.set_language(original_locale)
 	settings.load_preferences(settings.DEFAULT_PATH)
 	DirAccess.remove_absolute(test_path)
+	DirAccess.remove_absolute(test_path + ".backup")
 	DirAccess.remove_absolute(sentinel_path)
 	print("PHASE 0.5: %d assertions, %d failures" % [assertions, failures])
 	quit(0 if failures == 0 else 1)

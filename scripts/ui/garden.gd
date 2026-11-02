@@ -43,6 +43,8 @@ var gain_label: Label
 var gain_tween: Tween
 var last_gain: int = 0
 var dialog_tween: Tween
+var dialog_scroll: ScrollContainer
+var dialog_body: VBoxContainer
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -326,20 +328,26 @@ func _schedule_layout() -> void:
 
 func safe_margins_for(viewport_size: Vector2, screen_size: Vector2, usable: Rect2) -> Vector4:
 	var margins := Vector4(18, 24, 18, 24)
-	if screen_size.x > 0 and screen_size.y > 0:
+	if screen_size.x > 0 and screen_size.y > 0 and usable.has_area():
+		usable = usable.intersection(Rect2(Vector2.ZERO,screen_size))
+		if not usable.has_area():
+			return margins
 		margins.x = maxf(margins.x, usable.position.x * viewport_size.x / screen_size.x + 12)
 		margins.y = maxf(margins.y, usable.position.y * viewport_size.y / screen_size.y + 12)
 		margins.z = maxf(margins.z, (screen_size.x - usable.end.x) * viewport_size.x / screen_size.x + 12)
 		margins.w = maxf(margins.w, (screen_size.y - usable.end.y) * viewport_size.y / screen_size.y + 12)
 	return margins
 
+func _safe_margins() -> Vector4:
+	if OS.has_feature("mobile") and DisplayServer.get_name() != "headless":
+		return safe_margins_for(size, Vector2(DisplayServer.screen_get_size()), Rect2(DisplayServer.get_display_safe_area()))
+	return Vector4(18,24,18,24)
+
 func _layout() -> void:
 	_layout_pending = false
 	if not is_instance_valid(safe):
 		return
-	var margins := Vector4(18, 24, 18, 24)
-	if OS.has_feature("mobile") and DisplayServer.get_name() != "headless":
-		margins = safe_margins_for(size, Vector2(DisplayServer.screen_get_size()), Rect2(DisplayServer.get_display_safe_area()))
+	var margins: Vector4 = _safe_margins()
 	for i in range(4):
 		var margin_name: String = ["margin_left", "margin_top", "margin_right", "margin_bottom"][i]
 		var pixels: int = int(ceilf(margins[i]))
@@ -353,11 +361,17 @@ func _layout() -> void:
 				dialog_margins.add_theme_constant_override(margin_name, pixels)
 		var panel: PanelContainer = dialog_margins.get_node("Center/DialogPanel")
 		panel.custom_minimum_size.x = minf(size.x - margins.x - margins.z, 390)
+		if is_instance_valid(dialog_scroll) and is_instance_valid(dialog_body):
+			var heading: Control = panel.get_child(0).get_child(0)
+			var available: float = size.y-margins.y-margins.w-40-maxf(48,heading.get_combined_minimum_size().y)-12
+			dialog_scroll.custom_minimum_size.y = maxf(1,minf(dialog_body.get_combined_minimum_size().y,available))
 	# Fixed phone reference keeps text at 14–32 logical pixels. World scales
 	# independently, and 160×128 spacing leaves a full 48×48 cell per bed.
 	var factor: float = clampf((size.x - 20.0) / 1080.0, 0.335, 0.345)
 	var top: float = header.get_global_rect().end.y + 14.0
 	var bottom: float = context_card.get_global_rect().position.y - 18.0
+	# Insets/short available regions can shrink the artwork without shrinking text.
+	factor = minf(factor,maxf(0.12,(bottom-top-18)/990.0))
 	play_area = Rect2(0, top, size.x, maxf(1, bottom - top))
 	layout_changed.emit(size, play_area, Vector2(size.x * 0.5, (top + bottom) * 0.5 + 9), factor)
 
@@ -401,6 +415,7 @@ func _close_dialog(animated: bool = true) -> void:
 	var closing: Control = dialog
 	if closing.get_meta("closing",false) and animated:
 		return
+	_forget_dialog_bindings(closing)
 	closing.set_meta("closing",true)
 	if is_instance_valid(dialog_tween):
 		dialog_tween.kill()
@@ -426,6 +441,7 @@ func _open_dialog(kind: String) -> void:
 	if is_instance_valid(dialog_tween):
 		dialog_tween.kill()
 	if is_instance_valid(dialog):
+		_forget_dialog_bindings(dialog)
 		remove_child(dialog)
 		dialog.queue_free()
 	language_buttons.clear()
@@ -465,48 +481,68 @@ func _open_dialog(kind: String) -> void:
 	_bind(close, "UI_CLOSE", "tooltip_text")
 	_bind(close, "UI_CLOSE", "accessibility_name")
 	heading.add_child(close)
+	var body: VBoxContainer = content
+	if kind != "seeds":
+		dialog_scroll = ScrollContainer.new()
+		dialog_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		dialog_scroll.follow_focus = true
+		content.add_child(dialog_scroll)
+		dialog_body = VBoxContainer.new()
+		dialog_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		dialog_body.add_theme_constant_override("separation",12)
+		dialog_body.minimum_size_changed.connect(_schedule_layout)
+		dialog_scroll.add_child(dialog_body)
+		body = dialog_body
 	if kind == "seeds":
 		seed_picker = SeedPicker.new()
-		content.add_child(seed_picker)
+		body.add_child(seed_picker)
 		seed_picker.setup(self,selected_plot_id)
 	elif kind == "settings":
-		content.add_child(_label("UI_SETTINGS_HINT", 16, MUTED))
-		content.add_child(_label("UI_LANGUAGE", 16))
+		body.add_child(_label("UI_SETTINGS_HINT", 16, MUTED))
+		body.add_child(_label("UI_LANGUAGE", 16))
 		var language := _button(SettingsManager.NATIVE_KEYS[SettingsManager.SUPPORTED.find(SettingsManager.locale)], func() -> void: _open_dialog("language"))
 		settings_language_button = language
 		language.custom_minimum_size.y = 54
-		content.add_child(language)
+		body.add_child(language)
 		motion_toggle = CheckButton.new()
 		_bind(motion_toggle, "UI_REDUCED_MOTION")
 		motion_toggle.custom_minimum_size.y = 52
 		motion_toggle.button_pressed = SettingsManager.reduced_motion
 		motion_toggle.toggled.connect(SettingsManager.set_reduced_motion)
-		content.add_child(motion_toggle)
-		content.add_child(_label("UI_LOCAL_ONLY", 14, MUTED))
+		body.add_child(motion_toggle)
+		body.add_child(_label("UI_LOCAL_ONLY", 14, MUTED))
 	elif kind == "language":
-		content.add_child(_label("UI_LANGUAGE_HINT", 16, MUTED))
+		body.add_child(_label("UI_LANGUAGE_HINT", 16, MUTED))
 		for i in range(SettingsManager.SUPPORTED.size()):
 			var code: String = SettingsManager.SUPPORTED[i]
 			var button := _button(SettingsManager.NATIVE_KEYS[i], func() -> void: SettingsManager.set_language(code))
 			button.custom_minimum_size.y = 48
 			button.toggle_mode = true
 			language_buttons.append(button)
-			content.add_child(button)
-		content.add_child(_button("UI_BACK", _open_settings))
+			body.add_child(button)
+		body.add_child(_button("UI_BACK", _open_settings))
 	else:
-		content.add_child(_label("UI_GUIDE_BODY" if kind == "guide" else "UI_NOTES_BODY", 16, MUTED))
+		body.add_child(_label("UI_GUIDE_BODY" if kind == "guide" else "UI_NOTES_BODY", 16, MUTED))
 		var okay := _button("UI_OK", _close_dialog)
 		_primary(okay)
-		content.add_child(okay)
+		body.add_child(okay)
 	_refresh_texts()
 	dialog.modulate.a = 0.0
 	dialog_tween = create_tween()
 	dialog_tween.tween_property(dialog,"modulate:a",1.0,0.10 if SettingsManager.reduced_motion else 0.22)
 	close.grab_focus()
 
-func _unhandled_key_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel") and is_instance_valid(dialog):
+func handle_back() -> bool:
+	if not is_instance_valid(dialog):
+		return false
+	if dialog_kind == "language":
+		_open_settings()
+	else:
 		_close_dialog()
+	return true
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and handle_back():
 		get_viewport().set_input_as_handled()
 
 func open_seeds(id: StringName) -> void:
@@ -554,3 +590,19 @@ func _on_ui_motion(value: bool) -> void:
 	if value and is_instance_valid(balance_tween):
 		balance_tween.kill()
 		_display_balance(WorldService.gameplay.coins)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_RESUMED:
+		_schedule_layout()
+
+func _forget_dialog_bindings(closing: Control) -> void:
+	var live: Array[Dictionary] = []
+	for binding in _bindings:
+		if is_instance_valid(binding.node) and not closing.is_ancestor_of(binding.node):
+			live.append(binding)
+	_bindings = live
+	seed_picker = null
+	dialog_scroll = null
+	dialog_body = null
+	settings_language_button = null
+	motion_toggle = null

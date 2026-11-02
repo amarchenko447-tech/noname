@@ -45,6 +45,8 @@ func setup(owner_hud: Control, id: StringName) -> void:
 		column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		column.add_theme_constant_override("separation", 2)
 		margin.add_child(column)
+		column.minimum_size_changed.connect(func() -> void:
+			button.custom_minimum_size.y = maxf(188,column.get_combined_minimum_size().y+16))
 		var art := Preview.new()
 		art.species_id = species
 		art.preview_height = 40

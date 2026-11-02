@@ -26,15 +26,18 @@ func configure(size: Vector2, area: Rect2, screen_anchor: Vector2, default_zoom:
 func zoom_value() -> float:
 	return base_zoom * relative_zoom
 func is_overview() -> bool:
-	return relative_zoom < 0.98
+	return relative_zoom < 0.98 or zoom_value() < 0.32
 func screen_to_world(screen_point: Vector2) -> Vector2:
 	return camera.get_canvas_transform().affine_inverse() * screen_point
 func world_to_screen(world_point: Vector2) -> Vector2:
 	return camera.get_canvas_transform() * world_point
+func max_relative_zoom() -> float:
+	return maxf(MAX_RELATIVE_ZOOM,0.70/base_zoom)
+
 func _apply() -> void:
 	if not is_instance_valid(camera):
 		return
-	relative_zoom = clampf(relative_zoom, MIN_RELATIVE_ZOOM, MAX_RELATIVE_ZOOM)
+	relative_zoom = clampf(relative_zoom, MIN_RELATIVE_ZOOM, max_relative_zoom())
 	var zoom: float = zoom_value()
 	# A small pan allowance when the entire garden fits; at larger zoom the
 	# available travel grows with the world. Bounds come from model queries.
@@ -51,7 +54,7 @@ func pan_screen(delta: Vector2) -> void:
 	_apply()
 func gesture_zoom_pan(previous_center: Vector2, center: Vector2, ratio: float) -> void:
 	var before := screen_to_world(previous_center)
-	relative_zoom = clampf(relative_zoom * ratio, MIN_RELATIVE_ZOOM, MAX_RELATIVE_ZOOM)
+	relative_zoom = clampf(relative_zoom * ratio, MIN_RELATIVE_ZOOM, max_relative_zoom())
 	_apply()
 	focus += before - screen_to_world(center)
 	_apply()

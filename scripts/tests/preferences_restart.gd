@@ -8,6 +8,7 @@ func run() -> void:
 	var path: String = "user://qa_restart_preferences.cfg"
 	if mode == "cleanup":
 		DirAccess.remove_absolute(path)
+		DirAccess.remove_absolute(path + ".backup")
 		quit(0)
 		return
 	settings.load_preferences(path, "en_US")

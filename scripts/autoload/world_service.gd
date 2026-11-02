@@ -22,6 +22,8 @@ func _ready() -> void:
 	catalog = Catalog.new()
 	use_storage("user://world_v1.json")
 func use_storage(path: String) -> void:
+	model = null
+	gameplay = null
 	store = Store.new(path, SAVE_VERSION)
 	store.register_migration(1, _migrate_world_v1)
 	reload_world()
@@ -39,23 +41,31 @@ func snapshot(map: RefCounted = model, game: RefCounted = gameplay) -> Dictionar
 	var now: int = TimeService.now_utc()
 	return {"schema_version": SAVE_VERSION, "world": map.to_data(), "gameplay": game.to_data(now), "last_observed_utc": now}
 func reload_world() -> void:
-	model = Model.new(DEFINITION)
-	gameplay = Gameplay.new()
 	var data: Dictionary = store.load_snapshot(_valid)
 	load_status = store.status
+	if data.is_empty() and load_status == "blocked" and is_instance_valid(model):
+		last_save_ok = false
+		save_failed.emit("WORLD_SAVE_BLOCKED")
+		return
+	model = Model.new(DEFINITION)
+	gameplay = Gameplay.new()
 	if data.is_empty():
 		if not model.populate_starter():
 			push_error("Invalid starter region")
 			return
-		last_save_ok = store.commit(snapshot()) if load_status == "new" else false
+		last_save_ok = _write_snapshot(snapshot()) if load_status == "new" else false
 	else:
 		TimeService.observe_floor(int(data.last_observed_utc))
 		if not model.load_data(data.world) or not gameplay.load_data(data.gameplay, model, catalog):
 			push_error("Validated farm snapshot failed to load")
 			return
-		last_save_ok = store.commit(snapshot()) if load_status == "recovered" or store.migrated else true
+		last_save_ok = _write_snapshot(snapshot()) if load_status == "recovered" or store.migrated else true
 	world_changed.emit()
 	gameplay_changed.emit()
+func _write_snapshot(data: Dictionary) -> bool:
+	# Reject invalid candidates before touching either durable copy.
+	return _valid(data) and store.commit(data)
+
 func _candidate() -> RefCounted:
 	var candidate := Model.new(DEFINITION)
 	return candidate if candidate.load_data(model.to_data()) else null
@@ -67,7 +77,7 @@ func _commit(candidate: RefCounted, game: RefCounted, map_changed: bool, receipt
 		return false
 	busy = true
 	candidate.generation = model.generation + 1
-	if not store.commit(snapshot(candidate, game)):
+	if not _write_snapshot(snapshot(candidate, game)):
 		busy = false
 		last_save_ok = false
 		save_failed.emit("WORLD_SAVE_ERROR")
@@ -112,6 +122,6 @@ func next_plot_id(current: StringName) -> StringName:
 	var ids: Array[StringName] = model.ids_of_kind("plot")
 	return ids[(ids.find(current) + 1) % ids.size()] if not ids.is_empty() else &""
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
+	if what == NOTIFICATION_APPLICATION_PAUSED:
 		if is_instance_valid(model) and is_instance_valid(gameplay):
 			checkpoint()

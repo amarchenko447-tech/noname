@@ -31,6 +31,7 @@ func run() -> void:
 	var old_preferences_path: String = settings.settings_path
 	var preferences: String = FileAccess.get_file_as_string(old_preferences_path)
 	DirAccess.remove_absolute("user://qa_gameplay_preferences.cfg")
+	DirAccess.remove_absolute("user://qa_gameplay_preferences.cfg.backup")
 	settings.load_preferences("user://qa_gameplay_preferences.cfg",original_locale)
 	var table: Array = [["sunny_carrot",30,5,10],["moonberry",120,12,25],["starflower",300,25,55],["bubble_cactus",600,45,100],["crystal_mushroom",1200,80,180],["rainbow_tulip",2400,150,350]]
 	check(service.catalog.definitions.size() == 6, "six distinct resource definitions")
@@ -149,6 +150,7 @@ func run() -> void:
 	check(raw.schema_version == 2 and raw.world.objects.size() == 9, "migration saved as atomic farm schema 2")
 	settings.load_preferences(old_preferences_path)
 	DirAccess.remove_absolute("user://qa_gameplay_preferences.cfg")
+	DirAccess.remove_absolute("user://qa_gameplay_preferences.cfg.backup")
 	check(FileAccess.get_file_as_string(old_preferences_path) == preferences, "preferences unchanged after gameplay and migration")
 	clean()
 	clock.use_real_clock()

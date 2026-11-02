@@ -11,16 +11,29 @@ var camera_rig: Node2D
 var input_router: Node
 var tick: Timer
 var hud_layer: CanvasLayer
+var world_clip: Control
 func _ready() -> void:
+	get_tree().quit_on_go_back = false
+	get_tree().auto_accept_quit = false
+	get_window().size_changed.connect(_configure_canvas)
+	_configure_canvas()
 	var background_layer := CanvasLayer.new()
 	background_layer.layer = -10
 	add_child(background_layer)
 	var backdrop := Backdrop.new()
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background_layer.add_child(backdrop)
+	var world_layer := CanvasLayer.new()
+	world_layer.name = "WorldCanvas"
+	world_layer.layer = 0
+	add_child(world_layer)
+	world_clip = Control.new()
+	world_clip.clip_contents = true
+	world_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	world_layer.add_child(world_clip)
 	world = WorldView.new()
 	world.model = WorldService.model
-	add_child(world)
+	world_clip.add_child(world)
 	camera_rig = CameraRig.new()
 	add_child(camera_rig)
 	camera_rig.bounds = WorldService.model.navigation_bounds()
@@ -64,15 +77,20 @@ func _ready() -> void:
 	add_child(tick)
 	tick.start()
 func _on_layout_changed(size: Vector2, area: Rect2, anchor: Vector2, zoom: float) -> void:
+	world_clip.position = area.position
+	world_clip.size = area.size
 	camera_rig.configure(size, area, anchor, zoom)
 func _on_camera_changed() -> void:
 	world.touch_half_size = 24.0 / camera_rig.zoom_value()
+	# Fixed screen clipping keeps a zoomed map away from transparent HUD labels.
+	world.transform = camera_rig.camera.get_canvas_transform()
+	world.position -= world_clip.position
 func _on_modal_changed(_opened: bool) -> void:
 	if is_instance_valid(input_router):
 		input_router.cancel()
 func _on_tap(point: Vector2) -> void:
 	if camera_rig.is_overview():
-		camera_rig.zoom_at(1.0 / camera_rig.relative_zoom, point)
+		camera_rig.zoom_at(maxf(1.0 / camera_rig.relative_zoom,0.335/camera_rig.zoom_value()), point)
 		return
 	var id: StringName = world.plot_at(camera_rig.screen_to_world(point))
 	if id != &"":
@@ -130,6 +148,14 @@ func _on_tick() -> void:
 	world.update_crop_timers()
 	hud.refresh_timer()
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		if is_instance_valid(hud) and hud.handle_back():
+			return
+		WorldService.checkpoint()
+		get_tree().quit()
+	elif what == NOTIFICATION_WM_CLOSE_REQUEST:
+		WorldService.checkpoint()
+		get_tree().quit()
 	if not is_instance_valid(tick):
 		return
 	if what == NOTIFICATION_APPLICATION_PAUSED:
@@ -137,3 +163,12 @@ func _notification(what: int) -> void:
 	elif what == NOTIFICATION_APPLICATION_RESUMED:
 		tick.start()
 		_on_tick()
+
+func _configure_canvas() -> void:
+	var window: Window = get_window()
+	var reference := Vector2i(390,844)
+	if window.size.x > 0 and float(window.size.y)/window.size.x >= 1.5:
+		reference.x = 390
+		reference.y = clampi(roundi(float(reference.x)*window.size.y/window.size.x),640,844)
+	if window.content_scale_size != reference:
+		window.content_scale_size = reference

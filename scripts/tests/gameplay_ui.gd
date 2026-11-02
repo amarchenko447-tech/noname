@@ -55,6 +55,7 @@ func run() -> void:
 	var old_motion: bool = settings.reduced_motion
 	var old_preferences_path: String = settings.settings_path
 	DirAccess.remove_absolute("user://qa_gameplay_ui_preferences.cfg")
+	DirAccess.remove_absolute("user://qa_gameplay_ui_preferences.cfg.backup")
 	settings.load_preferences("user://qa_gameplay_ui_preferences.cfg",old_locale)
 	for path in [PATH,PATH.get_basename()+".backup.json"]:
 		DirAccess.remove_absolute(path)
@@ -192,6 +193,7 @@ func run() -> void:
 	farm.hud._close_dialog(false)
 	settings.load_preferences(old_preferences_path)
 	DirAccess.remove_absolute("user://qa_gameplay_ui_preferences.cfg")
+	DirAccess.remove_absolute("user://qa_gameplay_ui_preferences.cfg.backup")
 	clock.use_real_clock()
 	service.use_storage(old_path)
 	for path in [PATH,PATH.get_basename()+".backup.json"]:

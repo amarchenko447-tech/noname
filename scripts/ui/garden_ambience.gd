@@ -12,7 +12,7 @@ func _process(delta: float) -> void:
 		return
 	_accumulator += delta
 	if _accumulator >= 1.0 / 30.0:
-		animation_time = fmod(animation_time + _accumulator, 60.0)
+		animation_time += _accumulator
 		_accumulator = 0.0
 		queue_redraw()
 
