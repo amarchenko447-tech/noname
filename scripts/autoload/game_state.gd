@@ -9,6 +9,7 @@ func _ready() -> void:
 	WorldService.world_changed.connect(_rebuild_cache)
 	_rebuild_cache()
 func _rebuild_cache() -> void:
+	stage_save_pending = false
 	stages.clear()
 	for id in WorldService.gameplay.crops:
 		stages[id] = WorldService.gameplay.crops[id].stage_at(TimeService.now_utc())

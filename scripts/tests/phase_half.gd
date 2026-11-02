@@ -138,7 +138,7 @@ func run() -> void:
 				check(button.size.x >= 48 and button.size.y >= 48, "language target " + code)
 				check(garden.get_global_rect().encloses(button.get_global_rect()), "language choice fits " + code)
 				check(button.button_pressed == (settings.SUPPORTED[garden.language_buttons.find(button)] == code), "selected language marked " + code)
-			garden._close_dialog()
+			garden._close_dialog(false)
 			await settle()
 	# Stable overlap policy: create deliberate overlap without changing geometry.
 	var old_half: float = world.touch_half_size
@@ -176,6 +176,7 @@ func run() -> void:
 			root.push_input(touch, true)
 			await process_frame
 			check(garden.selected_plot_id == plot_ids[i], "ambient layer never intercepts touch")
+			garden._close_dialog(false)
 	# Buttons activate on a completed press/release, unlike plot press feedback.
 	await click(garden.settings_button.get_global_transform_with_canvas() * (garden.settings_button.size * 0.5))
 	check(garden.dialog_kind == "settings", "gear opens settings with GUI input")
@@ -187,7 +188,7 @@ func run() -> void:
 	var language_choice: Button = garden.language_buttons[5]
 	await click(language_choice.get_global_transform_with_canvas() * (language_choice.size * 0.5))
 	check(settings.locale == "fr", "clicking language choice immediately changes locale")
-	garden._close_dialog()
+	garden._close_dialog(false)
 	var margins: Vector4 = garden.safe_margins_for(Vector2(390, 844), Vector2(390, 844), Rect2(0, 59, 390, 751))
 	check(margins.y >= 71 and margins.w >= 46, "safe area includes notch and home indicator plus padding")
 	settings.set_language("en")

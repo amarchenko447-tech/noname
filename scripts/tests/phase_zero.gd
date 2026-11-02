@@ -58,6 +58,7 @@ func run() -> void:
 	root.push_input(event, true)
 	await process_frame
 	check(garden.selected_plot_id == plot_ids[7], "real mouse input reaches plot through HUD")
+	garden._close_dialog(false)
 	var touch := InputEventScreenTouch.new()
 	touch.index = 0
 	touch.pressed = true
@@ -67,5 +68,6 @@ func run() -> void:
 	root.push_input(touch, true)
 	await process_frame
 	check(garden.selected_plot_id == plot_ids[2], "real touch input reaches plot through HUD")
+	garden._close_dialog(false)
 	print("PHASE 0: %d failures" % failures)
 	quit(0 if failures == 0 else 1)

@@ -2,9 +2,12 @@ extends Control
 
 const Icon = preload("res://scripts/ui/garden_icon.gd")
 const Strings = preload("res://scripts/ui/strings.gd")
+const SeedPicker = preload("res://scripts/ui/seed_picker.gd")
+const HarvestEffects = preload("res://scripts/ui/harvest_effects.gd")
 const INK = Color("294c3c")
 const MUTED = Color("52634c")
 signal layout_changed(viewport_size: Vector2, play_area: Rect2, anchor: Vector2, zoom: float)
+signal action_requested(id: StringName)
 signal next_requested
 signal focus_requested
 signal retry_requested
@@ -32,11 +35,25 @@ var language_buttons: Array[Button] = []
 var _bindings: Array[Dictionary] = []
 var _layout_pending: bool = false
 var _refreshing: bool = false
+var seed_picker: Control
+var effects: Control
+var displayed_coins: float = 0
+var balance_tween: Tween
+var gain_label: Label
+var gain_tween: Tween
+var last_gain: int = 0
+var dialog_tween: Tween
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_theme()
 	_build_hud()
+	effects = HarvestEffects.new()
+	effects.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	effects.z_index = 2400
+	add_child(effects)
+	effects.reduced_motion = SettingsManager.reduced_motion
+	SettingsManager.motion_changed.connect(_on_ui_motion)
 	SettingsManager.language_changed.connect(_on_language_changed)
 	SettingsManager.save_failed.connect(_on_save_failed)
 	resized.connect(_schedule_layout)
@@ -75,6 +92,8 @@ func _build_theme() -> void:
 			box.border_color = Color("66895f")
 			box.set_border_width_all(2)
 		skin.set_stylebox(state, "Button", box)
+	skin.set_stylebox("disabled", "Button", _style(Color("dfe4d2"),16,10,false))
+	skin.set_color("font_disabled_color", "Button", MUTED)
 	skin.set_color("font_color", "Button", INK)
 	skin.set_color("font_hover_color", "Button", INK)
 	skin.set_color("font_pressed_color", "Button", INK)
@@ -208,9 +227,17 @@ func _build_hud() -> void:
 	content.add_child(context_title)
 	context_body = _label("", 16, MUTED)
 	content.add_child(context_body)
-	action_button = _button("ACTION_NEXT_BED", _next_bed)
+	var action_row := HBoxContainer.new()
+	action_row.add_theme_constant_override("separation",8)
+	content.add_child(action_row)
+	action_button = _button("ACTION_PLANT", _perform_action)
+	action_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_primary(action_button)
-	content.add_child(action_button)
+	action_row.add_child(action_button)
+	var next := _icon_button("next",_next_bed)
+	_bind(next,"ACTION_NEXT_BED","tooltip_text")
+	_bind(next,"ACTION_NEXT_BED","accessibility_name")
+	action_row.add_child(next)
 	var nav := HBoxContainer.new()
 	nav.add_theme_constant_override("separation", 10)
 	column.add_child(nav)
@@ -233,8 +260,8 @@ func _refresh_texts() -> void:
 	_bindings = live
 	if is_instance_valid(level_label):
 		level_label.text = tr("GARDEN_LEVEL") % 1
-		collection_label.text = tr("UI_COLLECTION_PROGRESS") % [SettingsManager.format_integer(0), SettingsManager.format_integer(24)]
-		coin_label.text = SettingsManager.format_integer(150)
+		collection_label.text = tr("HUD_HARVESTS") % SettingsManager.format_integer(WorldService.gameplay.statistics.total_harvests)
+		coin_label.text = SettingsManager.format_integer(roundi(displayed_coins))
 		settings_button.tooltip_text = tr("UI_SETTINGS")
 		settings_button.accessibility_name = tr("UI_SETTINGS")
 		_refresh_context()
@@ -247,21 +274,41 @@ func _refresh_texts() -> void:
 			button.button_pressed = active
 			button.add_theme_stylebox_override("normal", _style(Color("dfe9cb") if active else Color("f6f4e2"), 13, 10, false))
 			button.text = ("✓  " if active else "") + tr(SettingsManager.NATIVE_KEYS[i])
+	if is_instance_valid(seed_picker) and not seed_picker.is_queued_for_deletion():
+		seed_picker.refresh_texts()
+	if is_instance_valid(gain_label) and not gain_label.is_queued_for_deletion():
+		gain_label.text = tr("HARVEST_GAIN") % SettingsManager.format_integer(last_gain)
 	_refreshing = false
 	_schedule_layout()
 
 func _refresh_context() -> void:
 	var record: RefCounted = model.get_object(selected_plot_id)
+	var crop: RefCounted = GameState.crop_at(selected_plot_id)
+	action_button.disabled = false
 	if record != null:
 		context_title.text = (tr("PLOT_TITLE") % record.label_number if record.label_number > 0 else tr("UI_GARDEN")) + " · " + tr("PLOT_EMPTY")
 		context_body.text = tr("PLOT_SELECTED_HINT")
+		action_button.text = tr("ACTION_PLANT")
 	else:
 		context_title.text = tr(Strings.EMPTY)
 		context_body.text = tr(Strings.HINT)
-	action_button.text = tr("ACTION_NEXT_BED")
+		action_button.text = tr("ACTION_PLANT")
+		action_button.disabled = true
+	if crop != null:
+		var definition: Resource = WorldService.catalog.definitions[crop.species_id]
+		var stage: int = crop.stage_at(TimeService.now_utc())
+		context_title.text = tr(definition.name_key)
+		if stage == 3:
+			context_body.text = tr("READY_REWARD") % SettingsManager.format_integer(definition.reward_coins)
+			action_button.text = tr("ACTION_HARVEST")
+		else:
+			context_body.text = tr("GROWTH_STATUS") % [tr(["STAGE_SEED","STAGE_SPROUT","STAGE_GROWING","STAGE_MATURE"][stage]),SettingsManager.format_countdown(crop.remaining(TimeService.now_utc()))]
+			action_button.text = tr("GROWING_BUTTON")
+			action_button.disabled = true
 	if not world_error_key.is_empty():
 		context_body.text = tr(world_error_key)
 		action_button.text = tr("UI_RETRY")
+		action_button.disabled = false
 	if not SettingsManager.last_save_ok:
 		context_body.text = tr("SAVE_SETTINGS_ERROR")
 
@@ -320,13 +367,16 @@ func set_selected(id: StringName) -> void:
 	_schedule_layout()
 
 func _next_bed() -> void:
+	next_requested.emit()
+
+func _perform_action() -> void:
 	if not world_error_key.is_empty():
 		retry_requested.emit()
 	else:
-		next_requested.emit()
+		action_requested.emit(selected_plot_id)
 
 func _focus_garden() -> void:
-	_close_dialog()
+	_close_dialog(false)
 	focus_requested.emit()
 
 func can_start_world(point: Vector2) -> bool:
@@ -344,16 +394,37 @@ func show_world_error(key: String) -> void:
 func _open_settings() -> void:
 	_open_dialog("settings")
 
-func _close_dialog() -> void:
-	if is_instance_valid(dialog):
-		dialog.queue_free()
-		dialog = null
+func _close_dialog(animated: bool = true) -> void:
+	if not is_instance_valid(dialog):
+		dialog_kind = ""
+		return
+	var closing: Control = dialog
+	if closing.get_meta("closing",false) and animated:
+		return
+	closing.set_meta("closing",true)
+	if is_instance_valid(dialog_tween):
+		dialog_tween.kill()
 	language_buttons.clear()
 	dialog_kind = ""
 	modal_changed.emit(false)
-	settings_button.grab_focus()
+	if not animated:
+		remove_child(closing)
+		closing.queue_free()
+		dialog = null
+		settings_button.grab_focus()
+		return
+	dialog_tween = create_tween()
+	dialog_tween.tween_property(closing,"modulate:a",0.0,0.10 if SettingsManager.reduced_motion else 0.16)
+	dialog_tween.tween_callback(func() -> void:
+		if is_instance_valid(closing):
+			closing.queue_free()
+		if dialog == closing:
+			dialog = null
+		settings_button.grab_focus())
 
 func _open_dialog(kind: String) -> void:
+	if is_instance_valid(dialog_tween):
+		dialog_tween.kill()
 	if is_instance_valid(dialog):
 		remove_child(dialog)
 		dialog.queue_free()
@@ -386,7 +457,7 @@ func _open_dialog(kind: String) -> void:
 	var heading := HBoxContainer.new()
 	heading.add_theme_constant_override("separation", 6)
 	content.add_child(heading)
-	var key: String = {"settings": "UI_SETTINGS", "language": "UI_LANGUAGE", "guide": "UI_GUIDE_TITLE", "notes": "UI_COLLECTION"}[kind]
+	var key: String = {"settings": "UI_SETTINGS", "language": "UI_LANGUAGE", "guide": "UI_GUIDE_TITLE", "notes": "UI_COLLECTION", "seeds": "SEED_TITLE"}[kind]
 	var title := _label(key, 23)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(title)
@@ -394,7 +465,11 @@ func _open_dialog(kind: String) -> void:
 	_bind(close, "UI_CLOSE", "tooltip_text")
 	_bind(close, "UI_CLOSE", "accessibility_name")
 	heading.add_child(close)
-	if kind == "settings":
+	if kind == "seeds":
+		seed_picker = SeedPicker.new()
+		content.add_child(seed_picker)
+		seed_picker.setup(self,selected_plot_id)
+	elif kind == "settings":
 		content.add_child(_label("UI_SETTINGS_HINT", 16, MUTED))
 		content.add_child(_label("UI_LANGUAGE", 16))
 		var language := _button(SettingsManager.NATIVE_KEYS[SettingsManager.SUPPORTED.find(SettingsManager.locale)], func() -> void: _open_dialog("language"))
@@ -424,9 +499,58 @@ func _open_dialog(kind: String) -> void:
 		_primary(okay)
 		content.add_child(okay)
 	_refresh_texts()
+	dialog.modulate.a = 0.0
+	dialog_tween = create_tween()
+	dialog_tween.tween_property(dialog,"modulate:a",1.0,0.10 if SettingsManager.reduced_motion else 0.22)
 	close.grab_focus()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and is_instance_valid(dialog):
 		_close_dialog()
 		get_viewport().set_input_as_handled()
+
+func open_seeds(id: StringName) -> void:
+	set_selected(id)
+	_open_dialog("seeds")
+func refresh_gameplay() -> void:
+	if is_instance_valid(balance_tween):
+		balance_tween.kill()
+	displayed_coins = WorldService.gameplay.coins
+	_refresh_texts()
+func refresh_timer() -> void:
+	_refresh_context()
+func _display_balance(value: float) -> void:
+	displayed_coins = value
+	coin_label.text = SettingsManager.format_integer(roundi(value))
+func show_harvest(receipt: Dictionary, start: Vector2) -> void:
+	if is_instance_valid(balance_tween):
+		balance_tween.kill()
+	if SettingsManager.reduced_motion:
+		_display_balance(receipt.balance)
+	else:
+		_display_balance(receipt.old_balance)
+		balance_tween = create_tween()
+		balance_tween.tween_method(_display_balance,float(receipt.old_balance),float(receipt.balance),0.6)
+	effects.play(start,coin_label.get_global_rect().get_center())
+	if is_instance_valid(gain_label):
+		gain_label.queue_free()
+	if is_instance_valid(gain_tween):
+		gain_tween.kill()
+	gain_label = _label("",19,Color("496d4a"))
+	gain_label.z_index = 2500
+	last_gain = receipt.reward
+	gain_label.text = tr("HARVEST_GAIN") % SettingsManager.format_integer(last_gain)
+	gain_label.position = Vector2(24,context_card.get_global_rect().position.y-34)
+	gain_label.size.x = size.x-48
+	gain_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(gain_label)
+	gain_tween = create_tween()
+	gain_tween.tween_interval(0.8)
+	gain_tween.tween_property(gain_label,"modulate:a",0.0,0.3)
+	gain_tween.tween_callback(gain_label.queue_free)
+
+func _on_ui_motion(value: bool) -> void:
+	effects.set_reduced_motion(value)
+	if value and is_instance_valid(balance_tween):
+		balance_tween.kill()
+		_display_balance(WorldService.gameplay.coins)

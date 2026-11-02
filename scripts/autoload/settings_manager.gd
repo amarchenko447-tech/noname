@@ -82,3 +82,9 @@ func format_duration(seconds: int) -> String:
 	if clamped < 3600:
 		return tr("TIME_MINUTES") % (clamped / 60)
 	return tr("TIME_HOURS") % [clamped / 3600, (clamped % 3600) / 60]
+
+func format_countdown(seconds: int) -> String:
+	var value: int = maxi(0, seconds)
+	if value >= 3600:
+		return "%d:%02d" % [value / 3600, (value % 3600) / 60]
+	return "%02d:%02d" % [value / 60, value % 60]

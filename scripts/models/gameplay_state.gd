@@ -2,7 +2,7 @@ class_name GameplayState
 extends RefCounted
 const Crop = preload("res://scripts/models/crop_state.gd")
 const ECONOMY = preload("res://resources/economy/default.tres")
-var coins: int = 150
+var coins: int = 0
 var crops: Dictionary = {}
 var cycles: Dictionary = {}
 var statistics: Dictionary = {"total_planted": 0, "total_harvests": 0}

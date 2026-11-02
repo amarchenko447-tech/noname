@@ -186,6 +186,7 @@ func run() -> void:
 			touch(1, point, true)
 			touch(1, point, false)
 			check(world.selected_id == id and hud.selected_plot_id == id, "tap selects stable ID at both sizes")
+			hud._close_dialog(false)
 	root.size = Vector2i(390, 844)
 	farm._focus_garden()
 	await settle()
@@ -207,6 +208,7 @@ func run() -> void:
 	drag(1, center + Vector2(3, 1))
 	touch(1, center + Vector2(3, 1), false)
 	check(world.selected_id == &"starter_plot_05", "small finger jitter remains a tap")
+	hud._close_dialog(false)
 	world.select_plot(&"starter_plot_01")
 	center = world.screen_position(&"starter_plot_05")
 	var held_world: Vector2 = rig.screen_to_world(center)
@@ -258,7 +260,7 @@ func run() -> void:
 	drag(1, center + Vector2(40, 0))
 	touch(1, center + Vector2(40, 0), false)
 	check(rig.focus == stable_focus, "modal blocks camera gestures")
-	hud._close_dialog()
+	hud._close_dialog(false)
 	await settle()
 	center = world.screen_position(&"starter_plot_05")
 	touch(1, center, true)
@@ -271,6 +273,7 @@ func run() -> void:
 	mouse(center, true, MOUSE_BUTTON_LEFT, InputEvent.DEVICE_ID_EMULATION)
 	mouse(center, false, MOUSE_BUTTON_LEFT, InputEvent.DEVICE_ID_EMULATION)
 	check(changes.count == count_before + 1, "emulated mouse cannot duplicate touch selection")
+	hud._close_dialog(false)
 	# Transactions use separate storage and never touch saved language settings.
 	var saved_path: String = service.store.path
 	var test_path: String = "user://qa_world_075_service.json"

@@ -22,6 +22,8 @@ func _draw() -> void:
 		draw_arc(center + Vector2(0, -3), 3.5, -PI, PI * 0.5, 16, ink, 1.8, true)
 		draw_line(center + Vector2(0, 0), center + Vector2(0, 3), ink, 1.8, true)
 		draw_circle(center + Vector2(0, 6.5), 1, ink, true, -1, true)
+	elif kind == "next":
+		draw_polyline(PackedVector2Array([center+Vector2(-4,-7),center+Vector2(4,0),center+Vector2(-4,7)]),ink,2,true)
 	elif kind == "close":
 		draw_line(center - Vector2(6, 6), center + Vector2(6, 6), ink, 2, true)
 		draw_line(center + Vector2(-6, 6), center + Vector2(6, -6), ink, 2, true)

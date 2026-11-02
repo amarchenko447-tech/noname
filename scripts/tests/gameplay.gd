@@ -4,6 +4,7 @@ var assertions: int = 0
 var service: Node
 var game: Node
 var clock: Node
+const Record = preload("res://scripts/world/object_record.gd")
 const PATH = "user://qa_gameplay_sprint.json"
 func _initialize() -> void:
 	call_deferred("run")
@@ -27,7 +28,10 @@ func run() -> void:
 	var original_path: String = service.store.path
 	var settings: Node = root.get_node("SettingsManager")
 	var original_locale: String = settings.locale
-	var preferences: String = FileAccess.get_file_as_string(settings.settings_path)
+	var old_preferences_path: String = settings.settings_path
+	var preferences: String = FileAccess.get_file_as_string(old_preferences_path)
+	DirAccess.remove_absolute("user://qa_gameplay_preferences.cfg")
+	settings.load_preferences("user://qa_gameplay_preferences.cfg",original_locale)
 	var table: Array = [["sunny_carrot",30,5,10],["moonberry",120,12,25],["starflower",300,25,55],["bubble_cactus",600,45,100],["crystal_mushroom",1200,80,180],["rainbow_tulip",2400,150,350]]
 	check(service.catalog.definitions.size() == 6, "six distinct resource definitions")
 	var n: int = 0
@@ -108,6 +112,30 @@ func run() -> void:
 	check(not game.harvest(&"starter_plot_01",1).ok and service.gameplay.coins == 145 and game.crop_at(&"starter_plot_01") != null, "failed harvest cannot grant or destroy crop")
 	service.store.simulate_write_failure = false
 	check(game.harvest(&"starter_plot_01",1).ok and service.gameplay.coins == 155, "retry harvest once")
+	# The exact same crop commands work outside the initial nine object IDs.
+	fresh(6000000)
+	var extra := Record.new()
+	extra.id = &"expanded_plot_unique"
+	extra.definition_id = &"garden_plot"
+	extra.cell = Vector2i(-1,-1)
+	check(service.place_object(extra),"add an extra plot through world command")
+	check(game.plant(extra.id,&"sunny_carrot",0).ok,"plant on arbitrary expanded plot ID")
+	check(service.move_object(extra.id,Vector2i(-2,-2)),"move keeps crop attached to stable ID")
+	service.reload_world()
+	check(game.crop_at(extra.id) != null and service.model.get_object(extra.id).cell == Vector2i(-2,-2),"expanded plot and crop survive reload")
+	clock.advance_mock(30)
+	check(game.harvest(extra.id,1).ok and service.gameplay.coins == 155,"harvest arbitrary expanded ID")
+	check(service.remove_object(extra.id),"empty expanded plot may be removed")
+	fresh(7000000)
+	check(game.plant(&"starter_plot_01",&"sunny_carrot",0).ok,"plant for untrusted cache test")
+	var cached: Dictionary = service.snapshot()
+	cached.gameplay.crops[0].stage = 3
+	cached.gameplay.crops[0].ready = true
+	var edited := FileAccess.open(PATH,FileAccess.WRITE)
+	edited.store_string(JSON.stringify(cached))
+	edited.close()
+	service.reload_world()
+	check(game.crop_at(&"starter_plot_01").stage_at(clock.now_utc()) == 0 and not game.harvest(&"starter_plot_01",1).ok,"cached stage/ready cannot grant early harvest")
 	# Migration preserves Phase 0.75 map IDs/positions and separate preferences.
 	var legacy: Dictionary = service.model.to_data()
 	legacy.objects.reverse()
@@ -119,8 +147,9 @@ func run() -> void:
 	check(service.model.objects.has(&"starter_plot_05"), "migration retains stable IDs")
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(PATH))
 	check(raw.schema_version == 2 and raw.world.objects.size() == 9, "migration saved as atomic farm schema 2")
-	settings.set_language(original_locale)
-	check(FileAccess.get_file_as_string(settings.settings_path) == preferences, "preferences unchanged after gameplay and migration")
+	settings.load_preferences(old_preferences_path)
+	DirAccess.remove_absolute("user://qa_gameplay_preferences.cfg")
+	check(FileAccess.get_file_as_string(old_preferences_path) == preferences, "preferences unchanged after gameplay and migration")
 	clean()
 	clock.use_real_clock()
 	service.use_storage(original_path)
