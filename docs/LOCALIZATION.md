@@ -1,7 +1,7 @@
-# Localization architecture — Phase 0.5
+# Localization architecture
 
 ## Coverage and ownership
-`localization/ui.csv` is the editable UTF-8 source: 76 stable keys × 7 complete locales.
+`localization/ui.csv` is the editable UTF-8 source: 112 stable keys × 7 complete locales.
 Godot's CSV importer generates the checked-in `ui.<locale>.translation` resources.
 Project settings register them with `TranslationServer`; English is the fallback.
 Commit CSV, .import metadata and regenerated .translation files together.
@@ -13,13 +13,12 @@ buttons, tutorial steps, notifications and save errors. Those future features ar
 not implemented by adding their strings. Boot has no visible textual menu.
 
 `GardenStrings` retains the Phase 0 module as an alias list of stable keys.
-Do not put translated names into gameplay IDs, resources or saves. PlotData still
-uses stable `id` and `species_id` values. Only UI labels translate.
+Do not put translated names into gameplay IDs, resources or saves. WorldObjectRecord and CropState use stable `id`, `plot_id` and `species_id` values.
+Only UI labels translate.
 
 ## Preferences lifecycle
 `SettingsManager` is a real preferences-only autoload, introduced here because
-language selection and reduced motion require it. Other planned gameplay autoloads
-remain deferred. On first run it calls `OS.get_locale()`, resolves a supported
+language selection and reduced motion require it. WorldService, GameState and TimeService separately own gameplay and persistence. On first run it calls `OS.get_locale()`, resolves a supported
 locale, sets TranslationServer and persists the result. Later runs prefer saved
 language even if OS language changed.
 
@@ -67,9 +66,14 @@ in every locale. Physical exports may render at any pixel density.
 ## Verification boundaries
 Tests cover catalog completeness, glyph support, English fallback via an English-only
 test key, immediate UI changes, stable model identity, a gameplay-file sentinel,
-OS mapping and separate-process preference persistence. A sentinel is not a test
-of future gameplay saves: crop timers and reward transactions do not exist yet.
+OS mapping and separate-process preference persistence. The gameplay and UI suites additionally change all seven languages with actual
+planted crops, coins, cycle IDs and timestamps, and verify unchanged progress.
 
-All 42 garden/settings/language screenshots were visually inspected. Native-speaker
+The Phase 0.75 gallery includes 42 garden/settings/language captures. The night
+sprint adds 28 garden/seed captures, visually inspected at both phone sizes.
+Names wrap at 15px in seed cards; prices/availability use 14px. Long error messages
+reduce the scroll-list height instead of shrinking fonts. format_countdown() uses
+MM:SS / H:MM, shared by the seven supported locales; textual durations use
+translated unit templates and currency counts use locale-specific grouping. Native-speaker
 editorial review, real Android/iOS keyboards, screen readers and device locale APIs
 were not tested. Those remain explicit release QA tasks.

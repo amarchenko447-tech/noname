@@ -1,59 +1,64 @@
 # Mutant Garden
 Original offline mobile gardening game using **Godot 4.6.3 stable / GDScript**.
-Current milestone: **Phase 0.75 — expandable world architecture**.
-Phase 1 gameplay has not started.
+Current milestone: **night sprint — expandable world + planting, growth and harvest**.
 
-Open `project.godot` in Godot 4.6.3 and press **F5**.
-Tap any bed, drag the map, pinch to zoom (desktop: mouse drag/wheel),
-use Garden to recenter, or open the gear button → Language.
-Guide and Field notes open informative panels; planting, growth, rewards and shop
-transactions belong to the next phases. Level 1, 150 coins and 0/24 discoveries are
-foundation presentation values, not a new progression system.
+Open `project.godot` in Godot 4.6.3 and press **F5**. A new game starts with 150 coins.
+Tap an empty bed, choose a seed and confirm its price. Sunny Carrot matures in
+30 seconds; tap the mature plant or Harvest to receive coins and free the bed.
+Growth continues while the game is closed. Coins and crop removal save together.
 
-## This milestone
-- Original layered meadow, fences, wooden sign, bushes, mushrooms, flowers and pebbles.
-- Rounded dimensional soil beds, 180ms selection bounce and restrained glow.
-- Lightweight swaying grass, pollen, butterflies and sunlight; reduced-motion mode.
-- Readable 390×844 logical reference, independently scaled artwork, safe-area margins.
-- Full 48×48 logical bed targets, nearest-center selection and stable ID tie-break.
+Drag the map with one finger/mouse; pinch or use the mouse wheel to zoom.
+Garden recenters the camera. Gear opens seven-language settings and Reduced Motion.
+The HUD stays fixed while the world moves. Nine beds form a starter region;
+world data and gameplay use stable IDs and support more objects.
+
+## Implemented
+- Six original plant silhouettes, four visual stages each, resource-based balance.
+- Seed cards, localized prices/timers, insufficient-funds feedback, immediate language changes.
+- Planting/growth/maturity/harvest Tweens, gentle species-specific idle movement,
+  soil/light particles and coins flying to the balance; Reduced Motion support.
+- UTC/offline growth with one shared clock, atomic versioned snapshots,
+  migration from the Phase 0.75 world save, backup recovery and stale-action guards.
+- Original cozy meadow, dimensional beds, ambience, safe-area portrait layout.
 - English, Русский, Polski, Español, Deutsch, Français, Português (Brasil).
-- Immediate language changes using Godot TranslationServer, OS detection on first run,
-  English fallback, separately persisted preferences. No network or account required.
 
-[QA report](docs/QA_PHASE_0_5.md) · [Screenshot gallery](docs/screenshots/phase_0_5/README.md)
-· [Architecture/plan](docs/PLAN.md) · [Localization guide](docs/LOCALIZATION.md)
-· [Art guide](docs/ART_GUIDE.md) · [Asset notices](assets/LICENSES.md).
+[Russian sprint report](docs/NIGHT_SPRINT_REPORT.md) ·
+[Actual gameplay screenshots](docs/screenshots/night_sprint/README.md) ·
+[World architecture](docs/WORLD_EXPANSION_PLAN.md) ·
+[Save format](docs/SAVE_FORMAT.md) · [Balance](docs/BALANCE.md) ·
+[Localization](docs/LOCALIZATION.md) · [Art](docs/ART_GUIDE.md).
+Historical foundation evidence: [Phase 0.5](docs/QA_PHASE_0_5.md),
+[Phase 0.75](docs/QA_PHASE_0_75.md).
 
-## Automated checks
-```
+## Checks
+```sh
 godot --headless --path . --editor --import --quit
-godot --headless --path . --quit-after 60
+godot --headless --path . --quit-after 120
 godot --headless --path . --script res://scripts/tests/phase_zero.gd
 godot --headless --path . --script res://scripts/tests/phase_half.gd
-godot --headless --path . --script res://scripts/tests/preferences_restart.gd -- write
-godot --headless --path . --script res://scripts/tests/preferences_restart.gd -- read
-godot --headless --path . --script res://scripts/tests/preferences_restart.gd -- cleanup
+godot --headless --path . --script res://scripts/tests/phase_three_quarters.gd
+godot --headless --path . --script res://scripts/tests/gameplay.gd
+godot --headless --path . --script res://scripts/tests/gameplay_ui.gd
 ```
-The restart test requires separate invocations, in order. Test preferences use their
-own files. In restricted environments, set XDG_DATA_HOME, XDG_CONFIG_HOME and
-XDG_CACHE_HOME to writable task-local directories first; see the QA report.
+Separate-process persistence checks and isolated clock details are in the report.
+In restricted environments set XDG_DATA_HOME, XDG_CONFIG_HOME and XDG_CACHE_HOME
+to writable task-local directories. Automated fixtures use separate save files.
 
-## Actual screenshots
+## Render actual screenshots
 With a graphical display (or Xvfb):
+```sh
+godot --path . --audio-driver Dummy --script res://scripts/tests/capture_gameplay.gd -- /absolute/output
+godot --path . --audio-driver Dummy --script res://scripts/tests/capture_plant_study.gd -- /absolute/output/plant-study.png
 ```
-godot --path . --audio-driver Dummy --script res://scripts/tests/capture_review.gd -- /absolute/output
-```
-This runs the real boot/garden and captures all seven languages at 390×844 and
-430×932, including Settings and Language dialogs. Animation time is frozen at
-2.25 seconds for repeatability. The PNGs are native viewport captures, not mockups.
-For an exact desktop window, set the project's Window Width/Height Override to
-390/844 or 430/932; startup overrides can supersede CLI --resolution.
+The first command captures garden/seed panels in seven languages at 390×844 and
+430×932. It earns and spends coins through real gameplay commands in an isolated
+save and advances an injected clock to show all stages. Static captures freeze
+ambience at 2.25 seconds. They are real viewport PNGs, not mockups. Screenshot
+fixtures are not the default new-game state. Open Settings in the running game
+for language and motion controls; capture_review.gd captures those dialogs too.
 
 No third-party runtime packages, network calls, analytics or game SDKs are used.
-No Android/iOS export or device benchmark is claimed. Source/art license remains
+No physical Android/iOS benchmark or export is claimed. Large-world streaming,
+buildings, biomes and mutation gameplay remain future work. Level 1 is a static
+foundation label; the HUD harvest count is real. Source/art license remains
 pending the owner's decision; third-party font notices are bundled.
-
-## World expansion proposal — Phase 1 paused
-The long-term game is an expandable isometric farm; nine beds are the starter area.
-[Technical plan and audit](docs/WORLD_EXPANSION_PLAN.md) describes the proposed
-prerequisite refactoring. The core architecture is implemented in Phase 0.75; see docs/QA_PHASE_0_75.md.

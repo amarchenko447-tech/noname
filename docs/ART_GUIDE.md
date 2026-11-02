@@ -1,4 +1,4 @@
-# Phase 0.5 visual direction and asset manifest
+# Visual direction and asset manifest
 
 Original cozy storybook illustration built with local Godot vector drawing.
 Warm morning light, cream paper UI, sage meadow and dimensional terracotta soil.
@@ -33,7 +33,8 @@ Static artwork is cached by CanvasItem and repainted only for a relevant change
 (e.g. locale for sign). Independent soil nodes move for selection; they do not
 regenerate their seeded textures every frame. The lightweight ambience and ring
 request redraw at 30 Hz. There are no physics particles, shader dependencies,
-network art requests or gameplay timer polls.
+network art requests or per-plant timer polls. A single shared 1-second gameplay
+clock updates growth/countdowns; animated plants share the world’s 30 Hz redraw.
 
 Grass loops 3.5–4.5s, flowers gently bob, two slow butterflies and at most three
 pollen motes animate. Sunlight shimmer is a restrained 9s envelope. Selection is a
@@ -44,8 +45,15 @@ ring pulse and removes bounce, retaining immediate static selection feedback.
 Hidden/backgrounded scenes stop ambient animation work.
 
 ## Future artwork
-Plant-stage sprites, mutation visuals, purchasable decoration art and audio remain
-later phases. The mushrooms/fences here are environmental scenery, not purchases.
+Six plants now use original procedural geometry in `plant_visual.gd`:
+carrot/root leaves, berry clusters/luminous leaves, star-shaped flower, round ribbed
+cactus/bubbles, crystal-capped mushroom and layered rainbow tulip. Each has four
+poses; see screenshots/night_sprint/plant-study.png. The same renderer makes seed
+previews. Shadows and maturity halos are translucent geometry. Planting/stage/
+maturity Tweens last .45/.7/.8 seconds; harvest ghosts and coin flights last .6.
+At most three crop effects emit particles and at most three coin flights run
+concurrently. Reduced Motion removes movement/particles and keeps brief fades.
+Mutation visuals, purchasable decoration art and audio remain later phases. The mushrooms/fences here are environmental scenery, not purchases.
 If replacing vector art with PNGs, preserve touch geometry and record exact file
 names, transparent bounds, dimensions and provenance. Profile devices before
 claiming frame rate or mobile performance.

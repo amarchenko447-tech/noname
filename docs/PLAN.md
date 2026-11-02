@@ -88,3 +88,13 @@ IDs, occupancy/query model, separate HUD CanvasLayer, bounded Camera2D and gestu
 versioned atomic world snapshot and migration boundary. See QA_PHASE_0_75.md.
 The later night-sprint request authorizes proceeding to planting/growing after this
 stable milestone; it supersedes the earlier requirement to pause before Phase 1.
+
+## Night sprint — implemented
+The owner's attached night-development request explicitly authorizes continuation
+through planting, growth, harvest, economy and seven-language UI without intermediate
+approvals. The expandable model remains intact. Plant/economy Resources and a
+schema-2 atomic farm snapshot were implemented first, followed by six original
+animated plants, seed picker, countdowns and reward feedback. No large world,
+buildings, streaming, SDKs or monetization were added. The final test matrix and
+remaining release checks are in NIGHT_SPRINT_REPORT.md. Earlier gates above are
+historical records of their milestones, not the current playable feature list.

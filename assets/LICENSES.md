@@ -9,3 +9,8 @@ Phase 0.5 additions: all fence, sign, leaf/flower/bush, mushroom, soil texture,
 UI icon, butterfly and sunlight geometry is original project-authored vector art.
 No additional third-party assets, fonts, runtime packages or plugins were added.
 Translation text is project-authored; native-speaker editorial review is pending.
+
+Night-sprint additions: all six plants and their four growth poses, seed previews,
+readiness checks, soil/light particles and harvest coin geometry are original
+project-authored vector artwork in scripts/ui/plant_visual.gd and harvest_effects.gd.
+No additional external assets or dependencies were introduced.
