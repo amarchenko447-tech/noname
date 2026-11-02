@@ -1,0 +1,79 @@
+phase_zero
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PASS: boot transitions to garden
+PASS: exactly nine plots
+PASS: starter plot starter_plot_01
+PASS: starter plot starter_plot_02
+PASS: starter plot starter_plot_03
+PASS: starter plot starter_plot_04
+PASS: starter plot starter_plot_05
+PASS: starter plot starter_plot_06
+PASS: starter plot starter_plot_07
+PASS: starter plot starter_plot_08
+PASS: starter plot starter_plot_09
+PASS: unique plot IDs
+PASS: hit target 0
+PASS: hit target 1
+PASS: hit target 2
+PASS: hit target 3
+PASS: hit target 4
+PASS: hit target 5
+PASS: hit target 6
+PASS: hit target 7
+PASS: hit target 8
+PASS: outside hit rejected
+PASS: selection updates context
+PASS: HUD fits width (720, 1280)
+PASS: island fits (720, 1280)
+PASS: context fits height (720, 1280)
+PASS: garden clear of bottom card (720, 1280)
+PASS: HUD fits width (1080, 1920)
+PASS: island fits (1080, 1920)
+PASS: context fits height (1080, 1920)
+PASS: garden clear of bottom card (1080, 1920)
+PASS: HUD fits width (1170, 2532)
+PASS: island fits (1170, 2532)
+PASS: context fits height (1170, 2532)
+PASS: garden clear of bottom card (1170, 2532)
+PASS: HUD fits width (1440, 3200)
+PASS: island fits (1440, 3200)
+PASS: context fits height (1440, 3200)
+PASS: garden clear of bottom card (1440, 3200)
+PASS: HUD fits width (1080, 2106)
+PASS: island fits (1080, 2106)
+PASS: context fits height (1080, 2106)
+PASS: garden clear of bottom card (1080, 2106)
+PASS: real mouse input reaches plot through HUD
+PASS: real touch input reaches plot through HUD
+PHASE 0: 0 failures
+
+phase_half
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PHASE 0.5: 6621 assertions, 0 failures
+
+phase_three_quarters
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PHASE 0.75: 1251 assertions, 0 failures
+
+gameplay
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+GAMEPLAY: 449 assertions, 0 failures
+
+gameplay_ui
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+GAMEPLAY UI: 490 assertions, 0 failures
+
+stabilization
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+STABILIZATION: 237 assertions, 0 failures
+
+mobile_layout
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+MOBILE LAYOUT: 504 assertions, 0 failures

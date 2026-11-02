@@ -1,0 +1,30 @@
+SIGKILL plant: complete
+SIGKILL harvest: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY verify: PASS
+SIGKILL spam: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY invariant: PASS
+SIGKILL spam: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY invariant: PASS
+SIGKILL spam: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY invariant: PASS
+SIGKILL spam: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY invariant: PASS
+SIGKILL spam: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY invariant: PASS
+SIGKILL spam: complete
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+CRASH VERIFY invariant: PASS
+CRASH RECOVERY: 8 SIGKILL scenarios, PASS

@@ -62,3 +62,15 @@ No physical Android/iOS benchmark or export is claimed. Large-world streaming,
 buildings, biomes and mutation gameplay remain future work. Level 1 is a static
 foundation label; the HUD harvest count is real. Source/art license remains
 pending the owner's decision; third-party font notices are bundled.
+
+## Technical stabilization / mobile acceptance
+[Audit and measured results](docs/qa/REPORT.md) ·
+[Physical-device checklist and build instructions](docs/qa/MOBILE_ACCEPTANCE.md) ·
+[Updated real screenshots](docs/qa/screenshots/README.md).
+
+Run stabilization.gd and mobile_layout.gd with the same --headless test command
+as above. `python tests/run_crash_recovery.py` kills real isolated Godot processes
+to test durable commands and interrupted writes. performance_audit.gd and
+soak_audit.gd require a graphical display; exact commands and measurement limits
+are in the report. Export presets exclude tests/reports and include font notices.
+Android/iOS native acceptance is pending physical devices and complete toolchains.

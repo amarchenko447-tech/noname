@@ -1,0 +1,16 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)
+OpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)
+
+MOBILE CAPTURE compact-garden-ru-320x568 physical=(320, 568) logical=(390.0, 692.0)
+MOBILE CAPTURE compact-language-ru-320x568 physical=(320, 568) logical=(390.0, 692.0)
+MOBILE CAPTURE compact-garden-ru-360x640 physical=(360, 640) logical=(390.0, 693.0)
+MOBILE CAPTURE compact-language-ru-360x640 physical=(360, 640) logical=(390.0, 693.0)
+MOBILE CAPTURE compact-garden-ru-768x1024 physical=(768, 1024) logical=(633.0, 844.0)
+MOBILE CAPTURE compact-language-ru-768x1024 physical=(768, 1024) logical=(633.0, 844.0)
+MOBILE CAPTURE zoom-ru-390x844 physical=(390, 844) logical=(390.0, 844.0)
+MOBILE CAPTURE simulated-safe-garden-ru-390x844 physical=(390, 844) logical=(390.0, 844.0)
+MOBILE CAPTURE simulated-safe-language-ru-390x844 physical=(390, 844) logical=(390.0, 844.0)
+MOBILE CAPTURE simulated-safe-garden-ru-430x932 physical=(430, 932) logical=(390.0, 845.0)
+MOBILE CAPTURE simulated-safe-language-ru-430x932 physical=(430, 932) logical=(390.0, 845.0)

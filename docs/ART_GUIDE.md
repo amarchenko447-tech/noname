@@ -29,7 +29,12 @@ compact top cards. Navigation uses original outlined icons plus text.
 | assets/fonts/OpenSans-Regular.ttf | Licensed Open Sans regular | Scalable font |
 
 ## Animation budget
-Static artwork is cached by CanvasItem and repainted only for a relevant change
+Static bed/environment vector art is rasterized once into transparent SubViewports
+at one texel per world unit (above the maximum displayed density). The original
+geometry is retained unchanged; text/sign rebakes on locale change. Static GPU
+commands become textured quads, while plants and ambience stay live vectors.
+A fixed screen clipping rectangle keeps zoomed art away from HUD captions.
+Artwork is repainted only for a relevant change
 (e.g. locale for sign). Independent soil nodes move for selection; they do not
 regenerate their seeded textures every frame. The lightweight ambience and ring
 request redraw at 30 Hz. There are no physics particles, shader dependencies,

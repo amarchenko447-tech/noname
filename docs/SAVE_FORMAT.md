@@ -20,3 +20,13 @@ live currency/crops unchanged; temp files are never treated as completed saves.
 TimeService uses UTC for closed-app progression and a monotonic foreground anchor,
 with a saved observed-time floor. Backward clocks cannot rewind crops or rewards.
 No trusted-server anti-cheat guarantee is claimed for an offline game.
+
+## Technical audit hardening
+Every candidate snapshot is validated before backup or primary writes, including
+the supported timestamp bounds. Failed reloads keep an already loaded model intact
+and block commands rather than display a fresh balance. A first boot with unreadable
+files still shows a blocked starter view and never overwrites the damaged data.
+Recovered primary bytes are archived in .rejected-* before replacement. The schema
+and economy are unchanged. Linux SIGKILL tests cover committed planting, committed
+harvest and six interruptions during repeated atomic writes; platform storage and
+power-loss behavior still require native device testing.

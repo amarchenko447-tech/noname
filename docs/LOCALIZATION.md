@@ -28,6 +28,10 @@ generic pt maps to pt_BR. pt_PT and all other unsupported languages fall back to
 The explicit pt_BR locale is never shortened to an unregistered pt translation.
 
 Preferences live in `user://settings_v1.cfg`, written to a sibling .tmp then renamed.
+The last known-good preferences are retained in a sibling .backup file. Invalid
+primary bytes are preserved in .rejected-* before recovery; if no valid copy exists,
+startup reports failure and does not overwrite them. A deliberate settings change
+may repair the file after archiving. Healthy startup no longer rewrites preferences.
 The file contains only `preferences.language` and `preferences.reduced_motion`.
 No gameplay save, currencies, inventories or timestamps are read or rewritten.
 A write failure is exposed through a localized nonblocking message. Platform-specific

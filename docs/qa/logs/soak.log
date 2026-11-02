@@ -1,0 +1,36 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)
+OpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)
+
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":0,"static_bytes":36934343,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":10,"static_bytes":36938763,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":20,"static_bytes":36940175,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":30,"static_bytes":36938991,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":40,"static_bytes":36940223,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":50,"static_bytes":36941923,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":60,"static_bytes":36943487,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":70,"static_bytes":36944899,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":80,"static_bytes":36944555,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":90,"static_bytes":36946351,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":100,"static_bytes":36945619,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":110,"static_bytes":36946803,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":120,"static_bytes":36948503,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":130,"static_bytes":36950139,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":140,"static_bytes":36951551,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":150,"static_bytes":36950343,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":160,"static_bytes":36951527,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":170,"static_bytes":36950791,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":180,"static_bytes":36954719,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":190,"static_bytes":36956347,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":200,"static_bytes":36956003,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":210,"static_bytes":36955267,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":220,"static_bytes":36956971,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":230,"static_bytes":36958155,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":240,"static_bytes":36960927,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":250,"static_bytes":36960583,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":260,"static_bytes":36962283,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":270,"static_bytes":36961551,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":280,"static_bytes":36963071,"texture_bytes":21653553,"tweens":0}
+SOAK {"bindings":15,"nodes":125,"objects":1805,"orphans":0,"seconds":290,"static_bytes":36964771,"texture_bytes":21653553,"tweens":0}
+SOAK COMPLETE: PASS

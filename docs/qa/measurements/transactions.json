@@ -1,0 +1,8 @@
+{
+	"environment": "Linux local temporary storage; includes snapshot validation, backup, flush and rename; no device durability/latency claim",
+	"max_ms": 24.287,
+	"p50_ms": 1.621,
+	"p95_ms": 4.048,
+	"transactions": 200,
+	"valid": true
+}

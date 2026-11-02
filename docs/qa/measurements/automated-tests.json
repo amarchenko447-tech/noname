@@ -1,0 +1,41 @@
+{
+  "code_commit": "08cf3d7",
+  "suites": [
+    {
+      "suite": "phase_zero",
+      "assertions": 45,
+      "failures": 0
+    },
+    {
+      "suite": "phase_half",
+      "assertions": 6621,
+      "failures": 0
+    },
+    {
+      "suite": "phase_three_quarters",
+      "assertions": 1251,
+      "failures": 0
+    },
+    {
+      "suite": "gameplay",
+      "assertions": 449,
+      "failures": 0
+    },
+    {
+      "suite": "gameplay_ui",
+      "assertions": 490,
+      "failures": 0
+    },
+    {
+      "suite": "stabilization",
+      "assertions": 237,
+      "failures": 0
+    },
+    {
+      "suite": "mobile_layout",
+      "assertions": 504,
+      "failures": 0
+    }
+  ],
+  "total_assertions": 9597
+}

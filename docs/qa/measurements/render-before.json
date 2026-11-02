@@ -1,0 +1,147 @@
+{
+	"engine": "4.6.3-stable (official)",
+	"os": "Linux",
+	"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+	"samples": [
+		{
+			"draw_calls_p50": 1976.0,
+			"frame_ms_max": 935.264,
+			"frame_ms_p50": 78.076,
+			"frame_ms_p95": 143.414,
+			"frames": 600,
+			"node_count_series": [
+				75,
+				75,
+				75,
+				75,
+				75,
+				75,
+				75,
+				75,
+				75,
+				75
+			],
+			"orphan_nodes": 0,
+			"process_ms_p95": 251.445,
+			"scenario": "empty",
+			"static_bytes_series": [
+				34436487,
+				34442511,
+				34448127,
+				34453215,
+				34460871,
+				34460871,
+				34472391,
+				34472391,
+				34489455,
+				34489647
+			]
+		},
+		{
+			"draw_calls_p50": 2156.0,
+			"frame_ms_max": 766.617,
+			"frame_ms_p50": 99.981,
+			"frame_ms_p95": 272.502,
+			"frames": 600,
+			"node_count_series": [
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93
+			],
+			"orphan_nodes": 0,
+			"process_ms_p95": 549.886,
+			"scenario": "nine_mature",
+			"static_bytes_series": [
+				35309259,
+				35315283,
+				35320899,
+				35325987,
+				35333643,
+				35333643,
+				35345163,
+				35345163,
+				35362227,
+				35362419
+			]
+		},
+		{
+			"draw_calls_p50": 2131.0,
+			"frame_ms_max": 694.747,
+			"frame_ms_p50": 102.034,
+			"frame_ms_p95": 231.397,
+			"frames": 600,
+			"node_count_series": [
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93,
+				93
+			],
+			"orphan_nodes": 0,
+			"process_ms_p95": 287.823,
+			"scenario": "reduced_motion",
+			"static_bytes_series": [
+				35308639,
+				35314663,
+				35320279,
+				35325367,
+				35333023,
+				35333023,
+				35344543,
+				35344543,
+				35361607,
+				35361799
+			]
+		},
+		{
+			"draw_calls_p50": 2165.0,
+			"frame_ms_max": 1105.1,
+			"frame_ms_p50": 101.038,
+			"frame_ms_p95": 231.28,
+			"frames": 600,
+			"node_count_series": [
+				108,
+				105,
+				112,
+				167,
+				105,
+				108,
+				105,
+				112,
+				167,
+				105
+			],
+			"orphan_nodes": 0,
+			"process_ms_p95": 259.471,
+			"scenario": "dialogs",
+			"static_bytes_series": [
+				35653363,
+				36618483,
+				36901463,
+				37586635,
+				36804611,
+				36814211,
+				36796035,
+				36925727,
+				37622875,
+				36833387
+			]
+		}
+	],
+	"settled_nodes": 93,
+	"settled_objects": 1742,
+	"settled_static_bytes": 36591727,
+	"size": "(390, 844)"
+}

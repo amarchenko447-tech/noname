@@ -1,0 +1,244 @@
+{
+  "baseline": "4717dc8 night_sprint PNGs",
+  "method": "same isolated game fixture and frozen animation phase, RGB absolute differences; raster cache changes edge sampling",
+  "results": [
+    {
+      "file": "garden-de-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.3788998258192571,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-de-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.38053365272648637,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-en-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.37891704135779963,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-en-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.38369098712446353,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-es-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.3789231174302265,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-es-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.37682403433476397,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-fr-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.37891906671527525,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-fr-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.3765420700668729,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-pl-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.37892413010896425,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-pl-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.3819717536680307,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-pt_BR-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.37889476242556813,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-pt_BR-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.3815583724257244,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-ru-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.37885931866974526,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "garden-ru-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.3749184882057424,
+      "hud_max_channel_difference": 0
+    },
+    {
+      "file": "seeds-de-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.007692307692307693
+    },
+    {
+      "file": "seeds-de-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.007634660811125528
+    },
+    {
+      "file": "seeds-en-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.007692307692307693
+    },
+    {
+      "file": "seeds-en-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.007634660811125528
+    },
+    {
+      "file": "seeds-es-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.007692307692307693
+    },
+    {
+      "file": "seeds-es-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.007634660811125528
+    },
+    {
+      "file": "seeds-fr-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.007692307692307693
+    },
+    {
+      "file": "seeds-fr-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.007634660811125528
+    },
+    {
+      "file": "seeds-pl-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 0.007692307692307693
+    },
+    {
+      "file": "seeds-pl-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 0.007634660811125528
+    },
+    {
+      "file": "seeds-pt_BR-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 4.339537003281079
+    },
+    {
+      "file": "seeds-pt_BR-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 4.032732807665435
+    },
+    {
+      "file": "seeds-ru-390x844.png",
+      "size": [
+        390,
+        844
+      ],
+      "mean_channel_difference_0_255": 5.157923198444525
+    },
+    {
+      "file": "seeds-ru-430x932.png",
+      "size": [
+        430,
+        932
+      ],
+      "mean_channel_difference_0_255": 4.912691719067105
+    }
+  ]
+}

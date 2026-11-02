@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 333.1713150159994,
+  "cpu_user_seconds": 508.231414,
+  "cpu_system_seconds": 45.264889,
+  "max_rss_kib": 297324,
+  "provenance": "Captured process-wrapper stdout from baseline run"
+}
